@@ -1,0 +1,11 @@
+<div id="input">
+  <mat-form-field>
+    <mat-label>{{transform | titlecase}} {{axis | uppercase}}</mat-label>
+    <input matInput
+           type="number"
+           step="0.01"
+           [(ngModel)]="value"
+           (input)="onInputTransform($event)"
+    >
+  </mat-form-field>
+</div>

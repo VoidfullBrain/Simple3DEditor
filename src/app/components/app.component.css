@@ -1,0 +1,51 @@
+#app {
+  background-color: #5e5e5e;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#menubar {
+  background-color: #d9d9d9;
+  border-bottom: 1px solid #5e5e5e;
+  flex-basis: 20px;
+}
+
+#toolbar-top-container {
+  background-color: #d9d9d9;
+  border-bottom: 1px solid #5e5e5e;
+  border-left: 1px solid #5e5e5e;
+  flex-basis: 38px;
+  margin-left: 38px;
+}
+
+#editor-container {
+  display: flex;
+  flex-direction: row;
+  flex-basis: calc(99% - 78px);
+}
+
+#info-bar {
+  background-color: #d9d9d9;
+  border-top: 1px solid #5e5e5e;
+  flex-basis: 20px;
+}
+
+#toolbar-left-container {
+  background-color: #d9d9d9;
+  border-right: 1px solid #5e5e5e;
+  border-top: 1px solid #5e5e5e;
+  flex-basis: 38px;
+}
+
+#editor {
+  background-color: white;
+  flex-basis: calc(80% - 40px);
+}
+
+#configuration-panel-container {
+  background-color: #d9d9d9;
+  border-left: 1px solid #5e5e5e;
+  flex-basis: 20%;
+  height: 100%;
+}

@@ -1,0 +1,12 @@
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{transform | titlecase}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-input [selectedObject]="selectedObject" [transform]="transform" [axis]="'x'"></app-input>
+    <app-input [selectedObject]="selectedObject" [transform]="transform" [axis]="'y'"></app-input>
+    <app-input [selectedObject]="selectedObject" [transform]="transform" [axis]="'z'"></app-input>
+  </mat-expansion-panel>
+</mat-accordion>

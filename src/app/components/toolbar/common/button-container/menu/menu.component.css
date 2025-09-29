@@ -1,0 +1,11 @@
+.menu {
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+  position: absolute;
+  width: 76px;
+  z-index: 1000;
+}
+
+.grid-tile {
+
+}

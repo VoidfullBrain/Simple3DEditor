@@ -1,0 +1,12 @@
+<div id="configuration-item">
+  <mat-card>
+    <mat-card-header>
+      {{selectedObject.name}}
+    </mat-card-header>
+    <mat-card-content>
+      <app-accordion [selectedObject]="selectedObject" [transform]="'position'"></app-accordion>
+      <app-accordion [selectedObject]="selectedObject" [transform]="'scale'"></app-accordion>
+      <app-accordion [selectedObject]="selectedObject" [transform]="'rotation'"></app-accordion>
+    </mat-card-content>
+  </mat-card>
+</div>

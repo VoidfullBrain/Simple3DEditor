@@ -1,0 +1,6 @@
+<div id="input">
+  <mat-form-field>
+    <mat-label>{{label | titlecase}}</mat-label>
+    <input matInput type="number" step="0.01" [name]="name" [(ngModel)]="value" (change)="onChange()" [required]="required">
+  </mat-form-field>
+</div>

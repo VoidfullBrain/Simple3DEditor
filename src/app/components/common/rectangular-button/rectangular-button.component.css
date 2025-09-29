@@ -1,0 +1,10 @@
+button {
+  display: inline-block;
+  aspect-ratio: 1;
+  background-color: white;
+  width: 36px;
+  margin: 1px;
+  border: 1px solid grey;
+  border-radius: 3px;
+  padding: 0;
+}

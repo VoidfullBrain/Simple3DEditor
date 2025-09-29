@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32px" height="32px" viewBox="0 0 800 800" xml:space="preserve">
+<g transform="matrix(13.48 0 0 13.48 211.26 584.32)"  >
+<g style=""   >
+		<g transform="matrix(0.7 0.7 -0.7 0.7 -0.67 0)" id="SVGRepo_iconCarrier"  >
+<path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 0.2;"  transform=" translate(-29.5, -755.81)" d="m 23.8125 745.28125 c -0.46695 0.0551 -0.823 0.4979 -0.8125 1.09375 v 16 c 0.00005 0.52358 0.47642 0.99995 1 1 h 3.59375 l 2.6875 2.6875 c 0.29466 0.29526 0.78338 0.37451 1.15625 0.1875 l 1 -0.5 c 0.32794 -0.15944 0.55359 -0.51046 0.5625 -0.875 v -3.59375 l 2.71875 -2.71875 c 0.36548 -0.36968 0.36548 -1.03657 0 -1.40625 l -11 -11.5 c -0.3075 -0.3075 -0.62608 -0.40806 -0.90625 -0.375 z" stroke-linecap="round" />
+</g>
+		<g transform="matrix(0.92 0.38 -0.38 0.92 -1.17 -2.04)" id="SVGRepo_iconCarrier"  >
+<path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  transform=" translate(-68.24, -754.11)" d="m 67.488968 743.68351 l -6.122935 14.78208 c -0.20032 0.48374 0.05749 1.10615 0.541196 1.30656 c 0 0 4.069006 0.32223 3.907773 0.30318 l 0.866883 4.58348 c 0.15924 0.38554 0.58043 0.64578 0.996483 0.6157 l 1.115219 -0.0571 c 0.363992 -0.0218 0.706795 -0.25976 0.85453 -0.59314 l 0.973624 -4.63669 l 3.953865 -0.17698 c 0.47913 -0.20168 0.734338 -0.8178 0.538149 -1.29921 l -5.761816 -14.83413 c -0.443775 -1.07137 -1.513658 -0.88092 -1.862971 0.006 z" stroke-linecap="round" />
+</g>
+		<g transform="matrix(0.92 0.38 -0.38 0.92 -1.2 -1.99)" id="SVGRepo_iconCarrier"  >
+<path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(254,254,254); fill-rule: nonzero; opacity: 1;"  transform=" translate(-68.24, -754.17)" d="m 62.294818 758.83643 l 6.122935 -14.78208 l 5.761815 14.83414 l -4.321335 0.32919 l -1.106991 5.0562 l -1.137317 0.013 l -1.036007 -4.99178 z" stroke-linecap="round" />
+</g>
+</g>
+</g>
+<g transform="matrix(4.04 0 0 4.04 461.57 215.2)"  >
+<polygon style="stroke: rgb(0,0,0); stroke-width: 2; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  points="-50,-50 -50,50 50,50 50,-50 " />
+</g>
+</svg>

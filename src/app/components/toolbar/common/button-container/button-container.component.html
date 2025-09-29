@@ -1,0 +1,6 @@
+<div class="button-container top">
+  <app-rectangular-button #menuToggleButton [icon]="buttonContainer.icon" [text]="buttonContainer.name" (btnClick)="toggleMenu()"></app-rectangular-button>
+  <div *ngIf="show" id="menu">
+    <app-menu [position]="position" [buttons]="buttonContainer.buttons" [className]="buttonContainer.className"></app-menu>
+  </div>
+</div>

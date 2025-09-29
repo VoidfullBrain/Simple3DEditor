@@ -1,0 +1,9 @@
+<button
+  class=""
+  title="{{name}}"
+  (click)="onClick()">
+  <span *ngIf="showText; else showIcon">{{text}}</span>
+  <ng-template #showIcon>
+    <img src="{{icon}}" alt="{{name}}">
+  </ng-template>
+</button>

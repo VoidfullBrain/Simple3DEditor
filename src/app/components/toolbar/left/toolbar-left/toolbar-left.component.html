@@ -1,0 +1,7 @@
+<div id="toolbar">
+  <span *ngFor="let buttonContainer of buttonContainers">
+    <app-button-container [buttonContainer]="buttonContainer" [position]="position">
+      {{buttonContainer.name}}
+    </app-button-container>
+  </span>
+</div>
