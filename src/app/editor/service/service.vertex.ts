@@ -34,32 +34,49 @@ export class Vertex {
   }
 
   public showVerticesForAllObjects = () => {
+    console.log('showVerticesForAllObjects called, objects count:', this.editor.objects.length);
     this.editor.objects.forEach((obj) => {
+      console.log('Processing object:', obj.type, 'is Mesh:', obj instanceof THREE.Mesh);
       if (obj instanceof THREE.Mesh) {
         this.showVertices(obj);
       }
     });
+    console.log('vertexHelpersMap size after showing:', this.vertexHelpersMap.size);
   }
 
   public showVertices = (object: THREE.Mesh) => {
+    console.log('showVertices called for object:', object.uuid);
+
     if (this.vertexHelpersMap.has(object)) {
+      console.log('Object already has vertex helpers, making visible');
       const helpers = this.vertexHelpersMap.get(object);
       if (helpers) {
         helpers.visible = true;
+        console.log('Helpers now visible:', helpers.visible, 'children:', helpers.children.length);
       }
       return;
     }
 
-    if (!(object.geometry instanceof THREE.BufferGeometry)) return;
+    console.log('Creating new vertex helpers');
+    if (!(object.geometry instanceof THREE.BufferGeometry)) {
+      console.log('Geometry is not BufferGeometry');
+      return;
+    }
 
     const geometry = object.geometry;
     const positionAttribute = geometry.getAttribute('position');
 
-    if (!positionAttribute) return;
+    if (!positionAttribute) {
+      console.log('No position attribute found');
+      return;
+    }
+
+    console.log('Position attribute count:', positionAttribute.count);
 
     const vertexHelpers = new THREE.Group();
     vertexHelpers.name = 'vertexHelpers';
     vertexHelpers.userData['parentMesh'] = object;
+    vertexHelpers.visible = true;
 
     for (let i = 0; i < positionAttribute.count; i++) {
       const vertex = new THREE.Vector3(
@@ -81,8 +98,10 @@ export class Vertex {
       vertexHelpers.add(sphere);
     }
 
+    console.log('Created vertex helpers group with children:', vertexHelpers.children.length);
     object.add(vertexHelpers);
     this.vertexHelpersMap.set(object, vertexHelpers);
+    console.log('Added helpers to map, new size:', this.vertexHelpersMap.size);
   }
 
   public hideAllVertices = () => {
