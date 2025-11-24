@@ -43,6 +43,11 @@ export const config = {
           icon: 'assets/svg/polygon.svg',
         },
         {
+          name: SelectionTypeEnum.edge,
+          methodName: 'edgeSelection',
+          icon: 'assets/svg/edge.svg',
+        },
+        {
           name: SelectionTypeEnum.point,
           methodName: 'pointSelection',
           icon: 'assets/svg/point.svg',

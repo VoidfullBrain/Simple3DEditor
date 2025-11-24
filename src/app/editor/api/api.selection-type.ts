@@ -22,6 +22,12 @@ export class SelectionType extends AbstractApi {
     this.selectionService.toggleSelectionObjectAxes();
   }
 
+  public edgeSelection = () => {
+    this.editor.selectionType = SelectionTypeEnum.edge;
+    this.selectionService.updateVertexVisibility();
+    this.selectionService.toggleSelectionObjectAxes();
+  }
+
   public pointSelection = () => {
     this.editor.selectionType = SelectionTypeEnum.point;
     this.selectionService.updateVertexVisibility();
