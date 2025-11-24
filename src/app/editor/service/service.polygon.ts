@@ -29,15 +29,26 @@ export class Polygon {
     const rayCaster = new THREE.Raycaster();
     rayCaster.setFromCamera(mouse, this.editor.camera);
 
+    console.log('Raycaster setup:', {
+      mousePosition: mouse,
+      cameraPosition: this.editor.camera.position,
+      rayOrigin: rayCaster.ray.origin,
+      rayDirection: rayCaster.ray.direction
+    });
+
     const meshes = this.editor.objects.filter(obj => obj.type === 'Mesh') as THREE.Mesh[];
     console.log('Polygon raycasting against meshes:', meshes.length);
     meshes.forEach((mesh, i) => {
       const geom = mesh.geometry as THREE.BufferGeometry;
+      const bbox = new THREE.Box3().setFromObject(mesh);
       console.log(`Mesh ${i}:`, {
         visible: mesh.visible,
         hasGeometry: !!mesh.geometry,
         geometryType: mesh.geometry?.type,
         vertexCount: geom?.attributes?.['position']?.count,
+        position: mesh.position,
+        scale: mesh.scale,
+        boundingBox: { min: bbox.min, max: bbox.max },
         raycast: mesh.raycast !== undefined
       });
     });
