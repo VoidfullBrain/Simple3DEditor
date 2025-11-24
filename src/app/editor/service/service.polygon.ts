@@ -31,6 +31,16 @@ export class Polygon {
 
     const meshes = this.editor.objects.filter(obj => obj.type === 'Mesh') as THREE.Mesh[];
     console.log('Polygon raycasting against meshes:', meshes.length);
+    meshes.forEach((mesh, i) => {
+      const geom = mesh.geometry as THREE.BufferGeometry;
+      console.log(`Mesh ${i}:`, {
+        visible: mesh.visible,
+        hasGeometry: !!mesh.geometry,
+        geometryType: mesh.geometry?.type,
+        vertexCount: geom?.attributes?.['position']?.count,
+        raycast: mesh.raycast !== undefined
+      });
+    });
     const intersectedObjects = rayCaster.intersectObjects(meshes, false);
     console.log('Polygon intersections:', intersectedObjects.length);
 

@@ -20,6 +20,7 @@ export class SelectionType extends AbstractApi {
   }
 
   private clearAllSelections = () => {
+    this.selectionService.removeAllSelectedObjects();
     this.polygonService.deselectAllPolygons();
     this.edgeService.deselectAllEdges();
     this.vertexService.deselectAllVertices();
