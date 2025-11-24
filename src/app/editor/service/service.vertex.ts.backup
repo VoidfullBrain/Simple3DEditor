@@ -42,13 +42,7 @@ export class Vertex {
   }
 
   public showVertices = (object: THREE.Mesh) => {
-    if (this.vertexHelpersMap.has(object)) {
-      const helpers = this.vertexHelpersMap.get(object);
-      if (helpers) {
-        helpers.visible = true;
-      }
-      return;
-    }
+    if (this.vertexHelpersMap.has(object)) return;
 
     if (!(object.geometry instanceof THREE.BufferGeometry)) return;
 
@@ -69,7 +63,7 @@ export class Vertex {
       );
 
       const sphere = new THREE.Mesh(
-        new THREE.SphereGeometry(this.vertexSize, 16, 16),
+        new THREE.SphereGeometry(this.vertexSize, 8, 8),
         this.vertexMaterial.clone()
       );
 
@@ -87,27 +81,30 @@ export class Vertex {
 
   public hideAllVertices = () => {
     this.vertexHelpersMap.forEach((helpers, mesh) => {
-      helpers.visible = false;
+      if (helpers.parent) {
+        helpers.parent.remove(helpers);
+      }
     });
+    this.vertexHelpersMap.clear();
     this.selectedVertices = [];
   }
 
   public hideVertices = (object: THREE.Mesh) => {
     const helpers = this.vertexHelpersMap.get(object);
-    if (helpers) {
-      helpers.visible = false;
+    if (helpers && helpers.parent) {
+      helpers.parent.remove(helpers);
+      this.vertexHelpersMap.delete(object);
     }
   }
 
   public selectVertex = (mouse: THREE.Vector2, multiSelect: boolean = false): boolean => {
     const rayCaster = new THREE.Raycaster();
+    rayCaster.params.Mesh = { };
     rayCaster.setFromCamera(mouse, this.editor.camera);
 
     const allHelpers: THREE.Mesh[] = [];
     this.vertexHelpersMap.forEach((helpers) => {
-      if (helpers.visible) {
-        allHelpers.push(...helpers.children as THREE.Mesh[]);
-      }
+      allHelpers.push(...helpers.children as THREE.Mesh[]);
     });
 
     const intersectedObjects = rayCaster.intersectObjects(allHelpers, false);
