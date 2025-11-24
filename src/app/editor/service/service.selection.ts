@@ -154,8 +154,14 @@ export class Selection {
   }
 
   public toggleSelectedObjectsColor = (selectedObject: THREE.Object3D) => {
+    if (!selectedObject.children[0]) return;
+
     const lineSegment = selectedObject.children[0] as THREE.LineSegments;
+    if (!lineSegment || lineSegment.type !== 'LineSegments') return;
+
     const material = lineSegment.material as THREE.LineBasicMaterial;
+    if (!material) return;
+
     const color = new THREE.Color(this.colors[0]);
 
     if(material.color.equals(color)) {
