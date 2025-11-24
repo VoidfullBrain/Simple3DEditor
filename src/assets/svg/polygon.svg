@@ -1,14 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32px" height="32px" viewBox="0 0 800 800" xml:space="preserve">
-  <g transform="matrix(4.31 0 0 4.31 415.36 379.36)"  >
-    <polygon style="stroke: rgb(0,0,0); stroke-width: 4px; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  points="-50,-50 50,50 -50,50 " />
-  </g>
-  <g transform="matrix(0.15 0 0 0.15 201.56 162.56)"  >
-    <polygon style="stroke: rgb(0,0,0); stroke-width: 8px; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  points="-50,-50 -50,50 50,50 50,-50 " />
-  </g>
-  <g transform="matrix(0.2 0 0 0.2 632.63 593.63)"  >
-    <polygon style="stroke: rgb(0,0,0); stroke-width: 8px; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  points="-50,-50 -50,50 50,50 50,-50 " />
-  </g>
-  <g transform="matrix(0.2 0 0 0.2 199.88 596.88)"  >
-    <polygon style="stroke: rgb(0,0,0); stroke-width: 8px; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  points="-50,-50 -50,50 50,50 50,-50 " />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <rect width="256" height="256" fill="none"/>
+  <g stroke="#000" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="128,40 220,96 220,160 128,216 36,160 36,96"/>
+    <line x1="128" y1="40" x2="128" y2="216"/>
+    <line x1="128" y1="40" x2="36" y2="96"/>
+    <line x1="128" y1="40" x2="220" y2="96"/>
+    <line x1="128" y1="216" x2="36" y2="160"/>
+    <line x1="128" y1="216" x2="220" y2="160"/>
+    <line x1="36" y1="96" x2="36" y2="160"/>
+    <line x1="220" y1="96" x2="220" y2="160"/>
+    <circle cx="128" cy="40" r="8" fill="#000"/>
+    <circle cx="220" cy="96" r="8" fill="#000"/>
+    <circle cx="220" cy="160" r="8" fill="#000"/>
+    <circle cx="128" cy="216" r="8" fill="#000"/>
+    <circle cx="36" cy="160" r="8" fill="#000"/>
+    <circle cx="36" cy="96" r="8" fill="#000"/>
   </g>
 </svg>
