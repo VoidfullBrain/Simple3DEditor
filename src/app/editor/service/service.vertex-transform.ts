@@ -5,6 +5,7 @@ import {Vertex as VertexService} from "./service.vertex";
 import {Axis} from "../core/utility/axis/utility.axis";
 
 export class VertexTransform {
+  private static instance: VertexTransform | null = null;
   private editor: Editor;
   private vertexService: VertexService;
 
@@ -21,8 +22,18 @@ export class VertexTransform {
   private vertexAxesObject: THREE.Object3D | null = null;
 
   constructor(editor: Editor, vertexService: VertexService) {
+    console.log('VertexTransformService constructor');
     this.editor = editor;
     this.vertexService = vertexService;
+    VertexTransform.instance = this;
+  }
+
+  public static getInstance(editor: Editor, vertexService: VertexService): VertexTransform {
+    if (!VertexTransform.instance) {
+      console.log('Creating new global VertexTransform instance');
+      VertexTransform.instance = new VertexTransform(editor, vertexService);
+    }
+    return VertexTransform.instance;
   }
 
   public showVertexAxes = () => {
@@ -64,7 +75,11 @@ export class VertexTransform {
   }
 
   public startDrag = (mouse: THREE.Vector2, axis: AxisEnum) => {
-    if (this.vertexService.selectedVertices.length === 0 || !this.vertexService.selectedObject) return;
+    console.log('startDrag called, axis:', axis, 'mouse:', mouse);
+    if (this.vertexService.selectedVertices.length === 0 || !this.vertexService.selectedObject) {
+      console.log('No selected vertices or object');
+      return;
+    }
 
     this.raycaster.setFromCamera(mouse, this.editor.camera);
 
@@ -133,6 +148,7 @@ export class VertexTransform {
   }
 
   public getVertexAxesObject = (): THREE.Object3D | null => {
+    console.log('getVertexAxesObject called, result:', this.vertexAxesObject);
     return this.vertexAxesObject;
   }
 }

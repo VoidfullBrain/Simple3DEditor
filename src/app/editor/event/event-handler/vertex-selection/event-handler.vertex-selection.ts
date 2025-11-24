@@ -21,7 +21,8 @@ export class VertexSelection extends AbstractEventHandler {
       console.log('VertexSelection using VertexService instance');
     }
     if (!VertexSelection.vertexTransformService) {
-      VertexSelection.vertexTransformService = new VertexTransformService(this.editor, VertexSelection.vertexService);
+      VertexSelection.vertexTransformService = VertexTransformService.getInstance(this.editor, VertexSelection.vertexService);
+      console.log('VertexSelection using VertexTransformService instance');
     }
   }
 
