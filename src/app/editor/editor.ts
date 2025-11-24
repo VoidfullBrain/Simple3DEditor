@@ -9,6 +9,7 @@ import {Transform as TransformEnum} from "../enum/enum.transform";
 import {SelectionType as SelectionTypeEnum} from "../enum/enum.selection-type";
 import {Subject} from "rxjs";
 import {Mesh} from "three";
+import {Mesh as MeshFactory} from "./core/factory/mesh/factory.mesh";
 
 @Injectable({
   providedIn: 'root',
@@ -59,6 +60,11 @@ export class Editor {
 
     const eventSubscriber = new EventSubscriber(this);
     eventSubscriber.subscribeEvents();
+
+    // Create test cube: size 1, at origin (0,0,0), with 2 segments per side
+    const testCube = MeshFactory.makeCube(1, 1, 1, 2, 2, 2);
+    testCube.position.set(0, 0, 0);
+    this.addMesh(testCube);
   }
 
   public selectObject = () => {
