@@ -48,6 +48,14 @@ export class Control {
         this.controls.minPolarAngle = this.controlConfig.minPolarAngle;
       }
     }
+
+    // Apply damping settings if configured
+    if ((this.controlConfig as any).enableDamping !== undefined) {
+      this.controls.enableDamping = (this.controlConfig as any).enableDamping;
+    }
+    if ((this.controlConfig as any).dampingFactor !== undefined) {
+      this.controls.dampingFactor = (this.controlConfig as any).dampingFactor;
+    }
   }
 
   private updateControls = () => {

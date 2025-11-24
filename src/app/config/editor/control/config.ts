@@ -15,5 +15,7 @@ export const config = {
   minPolarAngle: 1,
   maxDistance: 100,
   minDistance: 0,
-  mouseButtons: { MIDDLE: MOUSE.ROTATE, RIGHT: MOUSE.PAN }
+  mouseButtons: { LEFT: -1, MIDDLE: MOUSE.ROTATE, RIGHT: MOUSE.PAN },  // Disable LEFT button for orbit controls
+  enableDamping: true,
+  dampingFactor: 0.05
 }

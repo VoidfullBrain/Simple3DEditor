@@ -22,8 +22,8 @@ export class Transform extends AbstractEventHandler{
   }
 
   public mouseMove = (event: MouseEvent) => {
-    // Don't handle transform in point mode (vertex transformation is handled separately)
-    if (this.editor.selectionType === SelectionTypeEnum.point) return;
+    // Only handle transform in geometry mode
+    if (this.editor.selectionType !== SelectionTypeEnum.geometry) return;
 
     if(CommonKeyEventHandler.leftMouseDown) {
       const canvas = this.editor.viewPort.renderer.domElement;
@@ -53,8 +53,8 @@ export class Transform extends AbstractEventHandler{
   }
 
   public mouseDown = (event: MouseEvent) => {
-    // Don't handle transform in point mode (vertex transformation is handled separately)
-    if (this.editor.selectionType === SelectionTypeEnum.point) return;
+    // Only handle transform in geometry mode
+    if (this.editor.selectionType !== SelectionTypeEnum.geometry) return;
 
     const canvas = this.editor.viewPort.renderer.domElement;
     const mouseStartPosition = this.mouseService.getMousePositionInDomElement(
@@ -72,8 +72,8 @@ export class Transform extends AbstractEventHandler{
   }
 
   public mouseUp = (event: MouseEvent) => {
-    // Don't handle transform in point mode (vertex transformation is handled separately)
-    if (this.editor.selectionType === SelectionTypeEnum.point) return;
+    // Only handle transform in geometry mode
+    if (this.editor.selectionType !== SelectionTypeEnum.geometry) return;
 
     this.transformService.endDrag();
   }
