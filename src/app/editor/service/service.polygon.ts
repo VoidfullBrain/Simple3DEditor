@@ -30,14 +30,20 @@ export class Polygon {
     rayCaster.setFromCamera(mouse, this.editor.camera);
 
     const meshes = this.editor.objects.filter(obj => obj.type === 'Mesh') as THREE.Mesh[];
+    console.log('Polygon raycasting against meshes:', meshes.length);
     const intersectedObjects = rayCaster.intersectObjects(meshes, false);
+    console.log('Polygon intersections:', intersectedObjects.length);
 
     if (intersectedObjects.length > 0) {
       const intersected = intersectedObjects[0];
       const mesh = intersected.object as THREE.Mesh;
       const faceIndex = intersected.faceIndex;
 
-      if (faceIndex === undefined) return false;
+      if (faceIndex === undefined) {
+        console.log('faceIndex is undefined!');
+        return false;
+      }
+      console.log('Selected face index:', faceIndex);
 
       if (!multiSelect) {
         this.deselectAllPolygons();
@@ -60,8 +66,10 @@ export class Polygon {
       if (alreadySelected && multiSelect) {
         this.deselectSinglePolygon(faceIndex);
       } else {
+        console.log('Adding polygon to selection, faceIndex:', faceIndex);
         this.selectedPolygons.push({ faceIndex, normal });
         this.highlightPolygon(mesh, faceIndex);
+        console.log('Polygon highlighted');
       }
 
       return true;

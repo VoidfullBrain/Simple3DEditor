@@ -61,6 +61,7 @@ export class Edge {
     rayCaster.params.Line = { threshold: this.edgeThreshold };
 
     const meshes = this.editor.objects.filter(obj => obj.type === 'Mesh') as THREE.Mesh[];
+    console.log('Edge raycasting against meshes:', meshes.length);
 
     let closestEdge: ClosestEdgeData | null = null;
 
@@ -130,10 +131,12 @@ export class Edge {
     });
 
     if (closestEdge) {
+      console.log('Edge selected');
       this.processEdgeSelection(closestEdge, multiSelect);
       return true;
     }
 
+    console.log('No edge selected');
     return false;
   }
 

@@ -31,9 +31,12 @@ export class PolygonSelection extends AbstractEventHandler {
     );
 
     const multiSelect = !this.editor.control.controls.enabled;
+    console.log('Attempting polygon selection at:', mousePosition, 'multiSelect:', multiSelect);
     const selected = PolygonSelection.polygonService.selectPolygon(mousePosition, multiSelect);
+    console.log('Polygon selection result:', selected);
 
     if (!selected && !multiSelect) {
+      console.log('Deselecting all polygons');
       PolygonSelection.polygonService.deselectAllPolygons();
     }
   }

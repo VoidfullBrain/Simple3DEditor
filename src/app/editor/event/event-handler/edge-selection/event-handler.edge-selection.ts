@@ -31,9 +31,12 @@ export class EdgeSelection extends AbstractEventHandler {
     );
 
     const multiSelect = !this.editor.control.controls.enabled;
+    console.log('Attempting edge selection at:', mousePosition, 'multiSelect:', multiSelect);
     const selected = EdgeSelection.edgeService.selectEdge(mousePosition, multiSelect);
+    console.log('Edge selection result:', selected);
 
     if (!selected && !multiSelect) {
+      console.log('Deselecting all edges');
       EdgeSelection.edgeService.deselectAllEdges();
     }
   }
