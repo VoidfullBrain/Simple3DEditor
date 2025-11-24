@@ -1,0 +1,139 @@
+import * as THREE from "three";
+import {Editor} from "../editor";
+
+interface SelectedPolygon {
+  faceIndex: number;
+  normal: THREE.Vector3;
+}
+
+export class Polygon {
+  private static instance: Polygon | null = null;
+  private editor: Editor;
+
+  public selectedPolygons: SelectedPolygon[] = [];
+  public selectedObject: THREE.Mesh | null = null;
+  private polygonHighlights: Map<THREE.Mesh, THREE.Group> = new Map();
+
+  private constructor(editor: Editor) {
+    this.editor = editor;
+  }
+
+  public static getInstance(editor: Editor): Polygon {
+    if (!Polygon.instance) {
+      Polygon.instance = new Polygon(editor);
+    }
+    return Polygon.instance;
+  }
+
+  public selectPolygon = (mouse: THREE.Vector2, multiSelect: boolean = false): boolean => {
+    const rayCaster = new THREE.Raycaster();
+    rayCaster.setFromCamera(mouse, this.editor.camera);
+
+    const meshes = this.editor.objects.filter(obj => obj.type === 'Mesh') as THREE.Mesh[];
+    const intersectedObjects = rayCaster.intersectObjects(meshes, false);
+
+    if (intersectedObjects.length > 0) {
+      const intersected = intersectedObjects[0];
+      const mesh = intersected.object as THREE.Mesh;
+      const faceIndex = intersected.faceIndex;
+
+      if (faceIndex === undefined) return false;
+
+      if (!multiSelect) {
+        this.deselectAllPolygons();
+      }
+
+      this.selectedObject = mesh;
+      const geometry = mesh.geometry as THREE.BufferGeometry;
+      const normalAttribute = geometry.getAttribute('normal');
+
+      const normal = new THREE.Vector3(
+        normalAttribute.getX(faceIndex * 3),
+        normalAttribute.getY(faceIndex * 3),
+        normalAttribute.getZ(faceIndex * 3)
+      );
+
+      const alreadySelected = this.selectedPolygons.find(
+        p => p.faceIndex === faceIndex && this.selectedObject === mesh
+      );
+
+      if (alreadySelected && multiSelect) {
+        this.deselectSinglePolygon(faceIndex);
+      } else {
+        this.selectedPolygons.push({ faceIndex, normal });
+        this.highlightPolygon(mesh, faceIndex);
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
+  private highlightPolygon = (mesh: THREE.Mesh, faceIndex: number) => {
+    const geometry = mesh.geometry as THREE.BufferGeometry;
+    const positionAttribute = geometry.getAttribute('position');
+
+    // Get the three vertices of the triangle
+    const v1 = new THREE.Vector3(
+      positionAttribute.getX(faceIndex * 3),
+      positionAttribute.getY(faceIndex * 3),
+      positionAttribute.getZ(faceIndex * 3)
+    );
+    const v2 = new THREE.Vector3(
+      positionAttribute.getX(faceIndex * 3 + 1),
+      positionAttribute.getY(faceIndex * 3 + 1),
+      positionAttribute.getZ(faceIndex * 3 + 1)
+    );
+    const v3 = new THREE.Vector3(
+      positionAttribute.getX(faceIndex * 3 + 2),
+      positionAttribute.getY(faceIndex * 3 + 2),
+      positionAttribute.getZ(faceIndex * 3 + 2)
+    );
+
+    // Create edges for the polygon
+    const points = [v1, v2, v3, v1];
+    const edgeGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, linewidth: 2 });
+    const edgeLine = new THREE.Line(edgeGeometry, edgeMaterial);
+
+    let highlightGroup = this.polygonHighlights.get(mesh);
+    if (!highlightGroup) {
+      highlightGroup = new THREE.Group();
+      highlightGroup.name = 'polygonHighlights';
+      mesh.add(highlightGroup);
+      this.polygonHighlights.set(mesh, highlightGroup);
+    }
+
+    edgeLine.userData['faceIndex'] = faceIndex;
+    highlightGroup.add(edgeLine);
+  }
+
+  public deselectAllPolygons = () => {
+    this.polygonHighlights.forEach((group, mesh) => {
+      mesh.remove(group);
+    });
+    this.polygonHighlights.clear();
+    this.selectedPolygons = [];
+  }
+
+  public deselectSinglePolygon = (faceIndex: number) => {
+    const index = this.selectedPolygons.findIndex(p => p.faceIndex === faceIndex);
+    if (index !== -1) {
+      this.selectedPolygons.splice(index, 1);
+
+      this.polygonHighlights.forEach((group) => {
+        const edgeToRemove = group.children.find(
+          child => child.userData['faceIndex'] === faceIndex
+        );
+        if (edgeToRemove) {
+          group.remove(edgeToRemove);
+        }
+      });
+    }
+  }
+
+  public hideAllPolygons = () => {
+    this.deselectAllPolygons();
+  }
+}

@@ -5,6 +5,8 @@ import {CommonKey as CommonKeyEventSubscriber} from "../../../../editor/event/ev
 import {Transform as TransformEventSubscriber} from "../../../../editor/event/event-subscriber/transform/event-subscriber.transform";
 import {VertexSelection as VertexSelectionEventSubscriber} from "../../../../editor/event/event-subscriber/vertex-selection/event-subscriber.vertex-selection";
 import {VertexTransform as VertexTransformEventSubscriber} from "../../../../editor/event/event-subscriber/vertex-transform/event-subscriber.vertex-transform";
+import {PolygonSelection as PolygonSelectionEventSubscriber} from "../../../../editor/event/event-subscriber/polygon-selection/event-subscriber.polygon-selection";
+import {EdgeSelection as EdgeSelectionEventSubscriber} from "../../../../editor/event/event-subscriber/edge-selection/event-subscriber.edge-selection";
 
 export const config = [
   {
@@ -47,6 +49,18 @@ export const config = [
     className: VertexTransformEventSubscriber,
     methods: [
       'addVertexTransformEventSubscriber',
+    ]
+  },
+  {
+    className: PolygonSelectionEventSubscriber,
+    methods: [
+      'addPolygonSelectionEventSubscriber',
+    ]
+  },
+  {
+    className: EdgeSelectionEventSubscriber,
+    methods: [
+      'addEdgeSelectionEventSubscriber',
     ]
   },
 ];

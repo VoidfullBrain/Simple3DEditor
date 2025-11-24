@@ -4,6 +4,8 @@ import {Editor} from "../editor";
 import {Axis} from "../core/utility/axis/utility.axis";
 import {CommonKey} from "../event/event-handler/common-key/event-handler.common-key";
 import {Vertex as VertexService} from "./service.vertex";
+import {Polygon as PolygonService} from "./service.polygon";
+import {Edge as EdgeService} from "./service.edge";
 import {SelectionType as SelectionTypeEnum} from "../../enum/enum.selection-type";
 
 export class Selection {
@@ -11,6 +13,8 @@ export class Selection {
   private frustumService: FrustumService;
   private editor: Editor;
   private vertexService: VertexService;
+  private polygonService: PolygonService;
+  private edgeService: EdgeService;
   private static selectionAxesObject: THREE.Object3D;
   private colors: Array<number> = [
     0xffffff,  // white - not selected
@@ -21,6 +25,8 @@ export class Selection {
     this.editor = editor;
     this.frustumService = new FrustumService(editor);
     this.vertexService = VertexService.getInstance(editor);
+    this.polygonService = PolygonService.getInstance(editor);
+    this.edgeService = EdgeService.getInstance(editor);
     console.log('SelectionService using VertexService instance:', this.vertexService === VertexService.getInstance(editor));
   }
 
@@ -222,13 +228,15 @@ export class Selection {
       }
     });
 
-    // Update VertexHelpers visibility (green spheres for selection)
+    // Hide all selection types first
+    this.vertexService.hideAllVertices();
+    this.polygonService.hideAllPolygons();
+    this.edgeService.hideAllEdges();
+
+    // Show appropriate selection helpers based on mode
     if (this.editor.selectionType === SelectionTypeEnum.point) {
       console.log('Showing vertices for all objects, object count:', this.editor.objects.length);
       this.vertexService.showVerticesForAllObjects();
-    } else {
-      console.log('Hiding all vertices');
-      this.vertexService.hideAllVertices();
     }
   }
 

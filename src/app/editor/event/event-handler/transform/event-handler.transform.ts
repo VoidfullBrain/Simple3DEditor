@@ -5,6 +5,7 @@ import {Axis as AxisService} from "../../../service/service.axis";
 import {Axis as AxisEnum} from "../../../../enum/enum.axis";
 import {Transform as TransformService} from "../../../service/service.transform";
 import {Transform as TransformEnum} from "../../../../enum/enum.transform";
+import {SelectionType as SelectionTypeEnum} from "../../../../enum/enum.selection-type";
 import {Editor} from "../../../editor";
 import * as THREE from "three";
 
@@ -21,6 +22,9 @@ export class Transform extends AbstractEventHandler{
   }
 
   public mouseMove = (event: MouseEvent) => {
+    // Don't handle transform in point mode (vertex transformation is handled separately)
+    if (this.editor.selectionType === SelectionTypeEnum.point) return;
+
     if(CommonKeyEventHandler.leftMouseDown) {
       const canvas = this.editor.viewPort.renderer.domElement;
       const mousePosition = this.mouseService.getMousePositionInDomElement(
@@ -49,6 +53,9 @@ export class Transform extends AbstractEventHandler{
   }
 
   public mouseDown = (event: MouseEvent) => {
+    // Don't handle transform in point mode (vertex transformation is handled separately)
+    if (this.editor.selectionType === SelectionTypeEnum.point) return;
+
     const canvas = this.editor.viewPort.renderer.domElement;
     const mouseStartPosition = this.mouseService.getMousePositionInDomElement(
       CommonKeyEventHandler.mousePosition,
@@ -65,6 +72,9 @@ export class Transform extends AbstractEventHandler{
   }
 
   public mouseUp = (event: MouseEvent) => {
+    // Don't handle transform in point mode (vertex transformation is handled separately)
+    if (this.editor.selectionType === SelectionTypeEnum.point) return;
+
     this.transformService.endDrag();
   }
 }
