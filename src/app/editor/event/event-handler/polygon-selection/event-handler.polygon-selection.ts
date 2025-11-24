@@ -30,8 +30,9 @@ export class PolygonSelection extends AbstractEventHandler {
     console.log('Polygon handler continuing - correct mode!');
 
     const canvas = this.editor.viewPort.renderer.domElement;
+    const rawMousePosition = new THREE.Vector2(event.clientX, event.clientY);
     const mousePosition = this.mouseService.getMousePositionInDomElement(
-      CommonKeyEventHandler.mousePosition,
+      rawMousePosition,
       canvas
     );
 
