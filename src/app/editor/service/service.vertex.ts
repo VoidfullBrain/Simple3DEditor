@@ -16,17 +16,21 @@ export class Vertex {
   public vertexMaterial: THREE.MeshBasicMaterial;
   public selectedVertexMaterial: THREE.MeshBasicMaterial;
 
-  private readonly vertexSize: number = 0.1;
+  private readonly vertexSize: number = 0.03;
 
   constructor(editor: Editor) {
     this.editor = editor;
     this.vertexMaterial = new THREE.MeshBasicMaterial({
       color: 0xffffff,
-      depthTest: false
+      depthTest: true,
+      transparent: true,
+      opacity: 0.8
     });
     this.selectedVertexMaterial = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
-      depthTest: false
+      depthTest: true,
+      transparent: true,
+      opacity: 1.0
     });
   }
 
@@ -74,7 +78,7 @@ export class Vertex {
 
   public selectVertex = (mouse: THREE.Vector2): boolean => {
     const rayCaster = new THREE.Raycaster();
-    rayCaster.params.Points = { threshold: 0.2 };
+    rayCaster.params.Mesh = { };
     rayCaster.setFromCamera(mouse, this.editor.camera);
 
     if (!this.vertexHelpers) return false;

@@ -23,6 +23,10 @@ export class Selection {
     this.vertexService = new VertexService(editor);
   }
 
+  public getVertexService(): VertexService {
+    return this.vertexService;
+  }
+
   public selectObject = (mouse: THREE.Vector2, multiSelect: boolean = false) => {
     if(this.isLeftClick()) {
       const rayCaster: THREE.Raycaster = new THREE.Raycaster();
@@ -202,11 +206,9 @@ export class Selection {
 
       this.editor.scene.add(Selection.selectionAxesObject);
 
-      if (this.editor.selectionType === SelectionTypeEnum.point) {
-        const selectedObject = this.editor.selectedObjects[0];
-        if (selectedObject instanceof THREE.Mesh) {
-          this.vertexService.showVertices(selectedObject);
-        }
+      const selectedObject = this.editor.selectedObjects[0];
+      if (selectedObject instanceof THREE.Mesh) {
+        this.vertexService.showVertices(selectedObject);
       }
     } else {
       this.vertexService.hideVertices();

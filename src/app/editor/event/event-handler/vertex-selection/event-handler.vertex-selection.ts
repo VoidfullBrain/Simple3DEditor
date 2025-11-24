@@ -9,19 +9,23 @@ import * as THREE from "three";
 
 export class VertexSelection extends AbstractEventHandler {
   private mouseService: MouseService;
-  private vertexService: VertexService;
-  private vertexTransformService: VertexTransformService;
+  private static vertexService: VertexService;
+  private static vertexTransformService: VertexTransformService;
 
   constructor(editor: Editor) {
     super(editor);
     this.mouseService = new MouseService();
-    this.vertexService = new VertexService(this.editor);
-    this.vertexTransformService = new VertexTransformService(this.editor, this.vertexService);
+
+    if (!VertexSelection.vertexService) {
+      VertexSelection.vertexService = new VertexService(this.editor);
+    }
+    if (!VertexSelection.vertexTransformService) {
+      VertexSelection.vertexTransformService = new VertexTransformService(this.editor, VertexSelection.vertexService);
+    }
   }
 
   public mouseClick = (event: MouseEvent) => {
     if (this.editor.selectionType !== SelectionTypeEnum.point) return;
-    if (!CommonKeyEventHandler.leftMouseDown) return;
 
     const timeDiff = Date.now() - CommonKeyEventHandler.leftMouseDownTime;
     if (timeDiff > 200) return;
@@ -36,16 +40,16 @@ export class VertexSelection extends AbstractEventHandler {
       const selectedObject = this.editor.selectedObjects[0];
 
       if (selectedObject instanceof THREE.Mesh) {
-        if (!this.vertexService.vertexHelpers) {
-          this.vertexService.showVertices(selectedObject);
+        if (!VertexSelection.vertexService.vertexHelpers) {
+          VertexSelection.vertexService.showVertices(selectedObject);
         }
 
-        const vertexSelected = this.vertexService.selectVertex(mousePosition);
+        const vertexSelected = VertexSelection.vertexService.selectVertex(mousePosition);
 
         if (vertexSelected) {
-          this.vertexTransformService.showVertexAxes();
+          VertexSelection.vertexTransformService.showVertexAxes();
         } else {
-          this.vertexTransformService.hideVertexAxes();
+          VertexSelection.vertexTransformService.hideVertexAxes();
         }
       }
     }

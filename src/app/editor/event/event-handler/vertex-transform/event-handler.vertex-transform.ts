@@ -12,21 +12,26 @@ import * as THREE from "three";
 export class VertexTransform extends AbstractEventHandler {
   private mouseService: MouseService;
   private axisService: AxisService;
-  private vertexService: VertexService;
-  private vertexTransformService: VertexTransformService;
+  private static vertexService: VertexService;
+  private static vertexTransformService: VertexTransformService;
 
   constructor(editor: Editor) {
     super(editor);
     this.mouseService = new MouseService();
     this.axisService = new AxisService(this.editor);
-    this.vertexService = new VertexService(this.editor);
-    this.vertexTransformService = new VertexTransformService(this.editor, this.vertexService);
+
+    if (!VertexTransform.vertexService) {
+      VertexTransform.vertexService = new VertexService(this.editor);
+    }
+    if (!VertexTransform.vertexTransformService) {
+      VertexTransform.vertexTransformService = new VertexTransformService(this.editor, VertexTransform.vertexService);
+    }
   }
 
   public mouseMove = (event: MouseEvent) => {
     if (this.editor.selectionType !== SelectionTypeEnum.point) return;
     if (!CommonKeyEventHandler.leftMouseDown) return;
-    if (!this.vertexService.selectedVertex) return;
+    if (!VertexTransform.vertexService.selectedVertex) return;
 
     const canvas = this.editor.viewPort.renderer.domElement;
     const mousePosition = this.mouseService.getMousePositionInDomElement(
@@ -37,7 +42,7 @@ export class VertexTransform extends AbstractEventHandler {
     const axis = this.axisService.selectedAxis;
     if (AxisService.isAxisSelected && axis) {
       const axisIndex = axis.name as keyof typeof AxisEnum;
-      this.vertexTransformService.translate(mousePosition, AxisEnum[axisIndex]);
+      VertexTransform.vertexTransformService.translate(mousePosition, AxisEnum[axisIndex]);
     }
 
     CommonKeyEventHandler.prevMousePosition = new THREE.Vector2(event.clientX, event.clientY);
@@ -45,7 +50,7 @@ export class VertexTransform extends AbstractEventHandler {
 
   public mouseDown = (event: MouseEvent) => {
     if (this.editor.selectionType !== SelectionTypeEnum.point) return;
-    if (!this.vertexService.selectedVertex) return;
+    if (!VertexTransform.vertexService.selectedVertex) return;
 
     const canvas = this.editor.viewPort.renderer.domElement;
     const mouseStartPosition = this.mouseService.getMousePositionInDomElement(
@@ -53,7 +58,7 @@ export class VertexTransform extends AbstractEventHandler {
       canvas
     );
 
-    const vertexAxesObject = this.vertexTransformService.getVertexAxesObject();
+    const vertexAxesObject = VertexTransform.vertexTransformService.getVertexAxesObject();
     if (!vertexAxesObject) return;
 
     const tempSelectedAxis = this.axisService.selectedAxis;
@@ -62,7 +67,7 @@ export class VertexTransform extends AbstractEventHandler {
     const axis = this.axisService.selectedAxis;
     if (AxisService.isAxisSelected && axis) {
       const axisIndex = axis.name as keyof typeof AxisEnum;
-      this.vertexTransformService.startDrag(mouseStartPosition, AxisEnum[axisIndex]);
+      VertexTransform.vertexTransformService.startDrag(mouseStartPosition, AxisEnum[axisIndex]);
     } else {
       this.axisService.selectedAxis = tempSelectedAxis;
     }
@@ -71,6 +76,6 @@ export class VertexTransform extends AbstractEventHandler {
   public mouseUp = (event: MouseEvent) => {
     if (this.editor.selectionType !== SelectionTypeEnum.point) return;
 
-    this.vertexTransformService.endDrag();
+    VertexTransform.vertexTransformService.endDrag();
   }
 }
