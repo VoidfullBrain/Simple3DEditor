@@ -19,6 +19,7 @@ export class Edge {
   public selectedEdges: SelectedEdge[] = [];
   public selectedObject: THREE.Mesh | null = null;
   private edgeHighlights: Map<THREE.Mesh, THREE.Group> = new Map();
+  private arrowHelper: THREE.ArrowHelper | null = null;
   private edgeThreshold: number = 0.1; // Distance threshold for edge selection
 
   private constructor(editor: Editor) {
@@ -161,6 +162,9 @@ export class Edge {
 
     edgeLine.userData['vertexIndices'] = edge.vertexIndices;
     highlightGroup.add(edgeLine);
+
+    // Create ArrowHelper at edge center
+    this.createArrowHelper(mesh, edge);
   }
 
   public deselectAllEdges = () => {
@@ -169,6 +173,11 @@ export class Edge {
     });
     this.edgeHighlights.clear();
     this.selectedEdges = [];
+
+    if (this.arrowHelper) {
+      this.editor.scene.remove(this.arrowHelper);
+      this.arrowHelper = null;
+    }
   }
 
   public deselectSingleEdge = (edge: SelectedEdge) => {
@@ -198,5 +207,49 @@ export class Edge {
 
   public hideAllEdges = () => {
     this.deselectAllEdges();
+  }
+
+  private createArrowHelper = (mesh: THREE.Mesh, edge: SelectedEdge) => {
+    // Remove old arrow helper
+    if (this.arrowHelper) {
+      this.editor.scene.remove(this.arrowHelper);
+      this.arrowHelper = null;
+    }
+
+    // Calculate edge center
+    const center = new THREE.Vector3(
+      (edge.vertices[0].x + edge.vertices[1].x) / 2,
+      (edge.vertices[0].y + edge.vertices[1].y) / 2,
+      (edge.vertices[0].z + edge.vertices[1].z) / 2
+    );
+
+    // Calculate edge direction
+    const edgeDirection = new THREE.Vector3()
+      .subVectors(edge.vertices[1], edge.vertices[0])
+      .normalize();
+
+    // Calculate perpendicular direction (pointing away from camera)
+    const cameraDirection = new THREE.Vector3();
+    this.editor.camera.getWorldDirection(cameraDirection);
+    const perpendicular = new THREE.Vector3()
+      .crossVectors(edgeDirection, cameraDirection)
+      .normalize();
+
+    // Create arrow helper
+    this.arrowHelper = new THREE.ArrowHelper(
+      perpendicular,
+      center,
+      0.5,
+      0x00ff00,
+      0.15,
+      0.1
+    );
+    this.arrowHelper.name = 'edgeArrowHelper';
+    this.arrowHelper.userData['type'] = 'edgeTransform';
+    this.editor.scene.add(this.arrowHelper);
+  }
+
+  public getArrowHelper = (): THREE.ArrowHelper | null => {
+    return this.arrowHelper;
   }
 }

@@ -54,4 +54,8 @@ export class Axis {
     })
   }
 
+  public deselectAxis = (): void => {
+    Axis.isAxisSelected = false;
+  }
+
 }

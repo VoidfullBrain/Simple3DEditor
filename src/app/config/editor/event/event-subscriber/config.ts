@@ -6,6 +6,7 @@ import {Transform as TransformEventSubscriber} from "../../../../editor/event/ev
 import {VertexSelection as VertexSelectionEventSubscriber} from "../../../../editor/event/event-subscriber/vertex-selection/event-subscriber.vertex-selection";
 import {VertexTransform as VertexTransformEventSubscriber} from "../../../../editor/event/event-subscriber/vertex-transform/event-subscriber.vertex-transform";
 import {PolygonSelection as PolygonSelectionEventSubscriber} from "../../../../editor/event/event-subscriber/polygon-selection/event-subscriber.polygon-selection";
+import {PolygonTransform as PolygonTransformEventSubscriber} from "../../../../editor/event/event-subscriber/polygon-transform/event-subscriber.polygon-transform";
 import {EdgeSelection as EdgeSelectionEventSubscriber} from "../../../../editor/event/event-subscriber/edge-selection/event-subscriber.edge-selection";
 
 export const config = [
@@ -55,6 +56,12 @@ export const config = [
     className: PolygonSelectionEventSubscriber,
     methods: [
       'addPolygonSelectionEventSubscriber',
+    ]
+  },
+  {
+    className: PolygonTransformEventSubscriber,
+    methods: [
+      'addPolygonTransformEventSubscriber',
     ]
   },
   {

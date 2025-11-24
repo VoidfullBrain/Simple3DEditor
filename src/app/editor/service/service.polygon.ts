@@ -13,6 +13,7 @@ export class Polygon {
   public selectedPolygons: SelectedPolygon[] = [];
   public selectedObject: THREE.Mesh | null = null;
   private polygonHighlights: Map<THREE.Mesh, THREE.Group> = new Map();
+  private arrowHelper: THREE.ArrowHelper | null = null;
 
   private constructor(editor: Editor) {
     this.editor = editor;
@@ -195,6 +196,9 @@ export class Polygon {
     edgeLine.userData['faceIndex'] = faceIndex;
     highlightGroup.add(edgeLine);
     console.log('Added edge line to highlight group, total lines:', highlightGroup.children.length);
+
+    // Create ArrowHelper at polygon center
+    this.createArrowHelper(mesh, faceIndex, v1, v2, v3);
   }
 
   public deselectAllPolygons = () => {
@@ -203,6 +207,11 @@ export class Polygon {
     });
     this.polygonHighlights.clear();
     this.selectedPolygons = [];
+
+    if (this.arrowHelper) {
+      this.editor.scene.remove(this.arrowHelper);
+      this.arrowHelper = null;
+    }
   }
 
   public deselectSinglePolygon = (faceIndex: number) => {
@@ -223,5 +232,57 @@ export class Polygon {
 
   public hideAllPolygons = () => {
     this.deselectAllPolygons();
+  }
+
+  private createArrowHelper = (mesh: THREE.Mesh, faceIndex: number, v1: THREE.Vector3, v2: THREE.Vector3, v3: THREE.Vector3) => {
+    // Remove old arrow helper
+    if (this.arrowHelper) {
+      this.editor.scene.remove(this.arrowHelper);
+      this.arrowHelper = null;
+    }
+
+    // Calculate polygon center
+    const center = new THREE.Vector3(
+      (v1.x + v2.x + v3.x) / 3,
+      (v1.y + v2.y + v3.y) / 3,
+      (v1.z + v2.z + v3.z) / 3
+    );
+
+    // Get face normal in world space
+    const geometry = mesh.geometry as THREE.BufferGeometry;
+    const normalAttribute = geometry.getAttribute('normal');
+    const indexAttribute = geometry.getIndex();
+
+    let normalIndex = faceIndex * 3;
+    if (indexAttribute) {
+      normalIndex = indexAttribute.getX(faceIndex * 3);
+    }
+
+    const normal = new THREE.Vector3(
+      normalAttribute.getX(normalIndex),
+      normalAttribute.getY(normalIndex),
+      normalAttribute.getZ(normalIndex)
+    );
+
+    // Transform normal to world space
+    const normalMatrix = new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld);
+    normal.applyMatrix3(normalMatrix).normalize();
+
+    // Create arrow helper
+    this.arrowHelper = new THREE.ArrowHelper(
+      normal,
+      center,
+      1,
+      0xffaa00,
+      0.2,
+      0.15
+    );
+    this.arrowHelper.name = 'polygonArrowHelper';
+    this.arrowHelper.userData['type'] = 'polygonTransform';
+    this.editor.scene.add(this.arrowHelper);
+  }
+
+  public getArrowHelper = (): THREE.ArrowHelper | null => {
+    return this.arrowHelper;
   }
 }
