@@ -126,27 +126,44 @@ export class Polygon {
       positionAttribute.getZ(faceIndex * 3 + 2)
     );
 
+    console.log('Highlighting polygon vertices:', v1, v2, v3);
+
+    // Apply mesh transformations to vertices
+    v1.applyMatrix4(mesh.matrixWorld);
+    v2.applyMatrix4(mesh.matrixWorld);
+    v3.applyMatrix4(mesh.matrixWorld);
+
+    console.log('World space vertices:', v1, v2, v3);
+
     // Create edges for the polygon
     const points = [v1, v2, v3, v1];
     const edgeGeometry = new THREE.BufferGeometry().setFromPoints(points);
-    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00, linewidth: 2 });
+    const edgeMaterial = new THREE.LineBasicMaterial({
+      color: 0xffaa00,
+      linewidth: 5,
+      depthTest: false
+    });
     const edgeLine = new THREE.Line(edgeGeometry, edgeMaterial);
+
+    console.log('Creating edge line with material:', edgeMaterial);
 
     let highlightGroup = this.polygonHighlights.get(mesh);
     if (!highlightGroup) {
       highlightGroup = new THREE.Group();
       highlightGroup.name = 'polygonHighlights';
-      mesh.add(highlightGroup);
+      this.editor.scene.add(highlightGroup);
       this.polygonHighlights.set(mesh, highlightGroup);
+      console.log('Created new highlight group and added to scene');
     }
 
     edgeLine.userData['faceIndex'] = faceIndex;
     highlightGroup.add(edgeLine);
+    console.log('Added edge line to highlight group, total lines:', highlightGroup.children.length);
   }
 
   public deselectAllPolygons = () => {
     this.polygonHighlights.forEach((group, mesh) => {
-      mesh.remove(group);
+      this.editor.scene.remove(group);
     });
     this.polygonHighlights.clear();
     this.selectedPolygons = [];
