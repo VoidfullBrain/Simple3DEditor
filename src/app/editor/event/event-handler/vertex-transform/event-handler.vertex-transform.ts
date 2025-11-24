@@ -21,7 +21,8 @@ export class VertexTransform extends AbstractEventHandler {
     this.axisService = new AxisService(this.editor);
 
     if (!VertexTransform.vertexService) {
-      VertexTransform.vertexService = new VertexService(this.editor);
+      VertexTransform.vertexService = VertexService.getInstance(this.editor);
+      console.log('VertexTransform using VertexService instance');
     }
     if (!VertexTransform.vertexTransformService) {
       VertexTransform.vertexTransformService = new VertexTransformService(this.editor, VertexTransform.vertexService);

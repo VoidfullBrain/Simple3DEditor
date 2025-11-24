@@ -20,7 +20,8 @@ export class Selection {
   constructor(editor: Editor) {
     this.editor = editor;
     this.frustumService = new FrustumService(editor);
-    this.vertexService = new VertexService(editor);
+    this.vertexService = VertexService.getInstance(editor);
+    console.log('SelectionService using VertexService instance:', this.vertexService === VertexService.getInstance(editor));
   }
 
   public getVertexService(): VertexService {

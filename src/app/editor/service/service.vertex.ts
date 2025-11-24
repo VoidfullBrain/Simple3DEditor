@@ -6,6 +6,7 @@ import {Injectable} from "@angular/core";
   providedIn: 'root',
 })
 export class Vertex {
+  private static instance: Vertex | null = null;
   private editor: Editor;
 
   public selectedVertices: Array<{vertex: THREE.Vector3, index: number}> = [];
@@ -18,6 +19,7 @@ export class Vertex {
   private readonly vertexSize: number = 0.03;
 
   constructor(editor: Editor) {
+    console.log('VertexService constructor, setting instance');
     this.editor = editor;
     this.vertexMaterial = new THREE.MeshBasicMaterial({
       color: 0xff8800,
@@ -31,6 +33,15 @@ export class Vertex {
       transparent: true,
       opacity: 1.0
     });
+    Vertex.instance = this;
+  }
+
+  public static getInstance(editor: Editor): Vertex {
+    if (!Vertex.instance) {
+      console.log('Creating new global Vertex instance');
+      Vertex.instance = new Vertex(editor);
+    }
+    return Vertex.instance;
   }
 
   public showVerticesForAllObjects = () => {

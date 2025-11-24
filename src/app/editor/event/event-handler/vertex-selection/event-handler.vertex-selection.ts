@@ -17,7 +17,8 @@ export class VertexSelection extends AbstractEventHandler {
     this.mouseService = new MouseService();
 
     if (!VertexSelection.vertexService) {
-      VertexSelection.vertexService = new VertexService(this.editor);
+      VertexSelection.vertexService = VertexService.getInstance(this.editor);
+      console.log('VertexSelection using VertexService instance');
     }
     if (!VertexSelection.vertexTransformService) {
       VertexSelection.vertexTransformService = new VertexTransformService(this.editor, VertexSelection.vertexService);
