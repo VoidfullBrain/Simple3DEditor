@@ -108,32 +108,68 @@ export class Polygon {
   private highlightPolygon = (mesh: THREE.Mesh, faceIndex: number) => {
     const geometry = mesh.geometry as THREE.BufferGeometry;
     const positionAttribute = geometry.getAttribute('position');
+    const indexAttribute = geometry.getIndex();
 
-    // Get the three vertices of the triangle
-    const v1 = new THREE.Vector3(
-      positionAttribute.getX(faceIndex * 3),
-      positionAttribute.getY(faceIndex * 3),
-      positionAttribute.getZ(faceIndex * 3)
-    );
-    const v2 = new THREE.Vector3(
-      positionAttribute.getX(faceIndex * 3 + 1),
-      positionAttribute.getY(faceIndex * 3 + 1),
-      positionAttribute.getZ(faceIndex * 3 + 1)
-    );
-    const v3 = new THREE.Vector3(
-      positionAttribute.getX(faceIndex * 3 + 2),
-      positionAttribute.getY(faceIndex * 3 + 2),
-      positionAttribute.getZ(faceIndex * 3 + 2)
-    );
+    console.log('=== POLYGON HIGHLIGHT DEBUG ===');
+    console.log('Geometry type:', geometry.type);
+    console.log('Has index:', !!indexAttribute);
+    console.log('Position count:', positionAttribute.count);
+    console.log('Index count:', indexAttribute?.count);
+    console.log('Face index:', faceIndex);
+    console.log('Trying to access positions:', faceIndex * 3, faceIndex * 3 + 1, faceIndex * 3 + 2);
 
-    console.log('Highlighting polygon vertices:', v1, v2, v3);
+    let v1: THREE.Vector3, v2: THREE.Vector3, v3: THREE.Vector3;
+
+    if (indexAttribute) {
+      // Indexed geometry - use indices to look up positions
+      const i1 = indexAttribute.getX(faceIndex * 3);
+      const i2 = indexAttribute.getX(faceIndex * 3 + 1);
+      const i3 = indexAttribute.getX(faceIndex * 3 + 2);
+
+      console.log('Using indices:', i1, i2, i3);
+
+      v1 = new THREE.Vector3(
+        positionAttribute.getX(i1),
+        positionAttribute.getY(i1),
+        positionAttribute.getZ(i1)
+      );
+      v2 = new THREE.Vector3(
+        positionAttribute.getX(i2),
+        positionAttribute.getY(i2),
+        positionAttribute.getZ(i2)
+      );
+      v3 = new THREE.Vector3(
+        positionAttribute.getX(i3),
+        positionAttribute.getY(i3),
+        positionAttribute.getZ(i3)
+      );
+    } else {
+      // Non-indexed geometry - positions are stored sequentially
+      v1 = new THREE.Vector3(
+        positionAttribute.getX(faceIndex * 3),
+        positionAttribute.getY(faceIndex * 3),
+        positionAttribute.getZ(faceIndex * 3)
+      );
+      v2 = new THREE.Vector3(
+        positionAttribute.getX(faceIndex * 3 + 1),
+        positionAttribute.getY(faceIndex * 3 + 1),
+        positionAttribute.getZ(faceIndex * 3 + 1)
+      );
+      v3 = new THREE.Vector3(
+        positionAttribute.getX(faceIndex * 3 + 2),
+        positionAttribute.getY(faceIndex * 3 + 2),
+        positionAttribute.getZ(faceIndex * 3 + 2)
+      );
+    }
+
+    console.log('Local vertices:', [v1.x, v1.y, v1.z], [v2.x, v2.y, v2.z], [v3.x, v3.y, v3.z]);
 
     // Apply mesh transformations to vertices
     v1.applyMatrix4(mesh.matrixWorld);
     v2.applyMatrix4(mesh.matrixWorld);
     v3.applyMatrix4(mesh.matrixWorld);
 
-    console.log('World space vertices:', v1, v2, v3);
+    console.log('World vertices:', [v1.x, v1.y, v1.z], [v2.x, v2.y, v2.z], [v3.x, v3.y, v3.z]);
 
     // Create edges for the polygon
     const points = [v1, v2, v3, v1];
