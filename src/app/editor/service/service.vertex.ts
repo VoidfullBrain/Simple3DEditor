@@ -277,6 +277,9 @@ export class Vertex {
     geometry.computeVertexNormals();
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
+
+    // Update wireframe to reflect geometry changes
+    this.updateWireframe(this.selectedObject);
   }
 
   public getAverageWorldVertexPosition = (): THREE.Vector3 | null => {
@@ -299,5 +302,26 @@ export class Vertex {
     console.log('World position:', worldPosition);
 
     return worldPosition;
+  }
+
+  private updateWireframe(mesh: THREE.Mesh): void {
+    // Find and remove old wireframe
+    const wireframeIndex = mesh.children.findIndex(child => child.type === 'LineSegments');
+    if (wireframeIndex !== -1) {
+      const oldWireframe = mesh.children[wireframeIndex];
+      mesh.remove(oldWireframe);
+      if (oldWireframe instanceof THREE.LineSegments) {
+        oldWireframe.geometry.dispose();
+        if (oldWireframe.material instanceof THREE.Material) {
+          oldWireframe.material.dispose();
+        }
+      }
+    }
+
+    // Create new wireframe with updated geometry
+    const wireframeGeometry = new THREE.WireframeGeometry(mesh.geometry);
+    const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+    const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
+    mesh.add(wireframe);
   }
 }
