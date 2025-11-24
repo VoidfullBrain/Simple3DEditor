@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {Editor} from "../editor";
+import {Axis} from "../core/utility/axis/utility.axis";
 
 interface SelectedEdge {
   vertexIndices: [number, number];
@@ -19,7 +20,7 @@ export class Edge {
   public selectedEdges: SelectedEdge[] = [];
   public selectedObject: THREE.Mesh | null = null;
   private edgeHighlights: Map<THREE.Mesh, THREE.Group> = new Map();
-  private arrowHelper: THREE.ArrowHelper | null = null;
+  private edgeAxesObject: THREE.Object3D | null = null;
   private edgeThreshold: number = 0.1; // Distance threshold for edge selection
 
   private constructor(editor: Editor) {
@@ -174,9 +175,9 @@ export class Edge {
     this.edgeHighlights.clear();
     this.selectedEdges = [];
 
-    if (this.arrowHelper) {
-      this.editor.scene.remove(this.arrowHelper);
-      this.arrowHelper = null;
+    if (this.edgeAxesObject) {
+      this.editor.scene.remove(this.edgeAxesObject);
+      this.edgeAxesObject = null;
     }
   }
 
@@ -210,10 +211,10 @@ export class Edge {
   }
 
   private createArrowHelper = (mesh: THREE.Mesh, edge: SelectedEdge) => {
-    // Remove old arrow helper
-    if (this.arrowHelper) {
-      this.editor.scene.remove(this.arrowHelper);
-      this.arrowHelper = null;
+    // Remove old axes
+    if (this.edgeAxesObject) {
+      this.editor.scene.remove(this.edgeAxesObject);
+      this.edgeAxesObject = null;
     }
 
     // Calculate edge center
@@ -223,33 +224,18 @@ export class Edge {
       (edge.vertices[0].z + edge.vertices[1].z) / 2
     );
 
-    // Calculate edge direction
-    const edgeDirection = new THREE.Vector3()
-      .subVectors(edge.vertices[1], edge.vertices[0])
-      .normalize();
+    // Create axes object at edge center
+    this.edgeAxesObject = new THREE.Object3D();
+    this.edgeAxesObject.name = 'edgeAxesObject';
+    this.edgeAxesObject.position.copy(center);
 
-    // Calculate perpendicular direction (pointing away from camera)
-    const cameraDirection = new THREE.Vector3();
-    this.editor.camera.getWorldDirection(cameraDirection);
-    const perpendicular = new THREE.Vector3()
-      .crossVectors(edgeDirection, cameraDirection)
-      .normalize();
+    const axisHelper = new Axis(this.edgeAxesObject, false);
+    axisHelper.setAxes([0.5, 0.5, 0.5]);
 
-    // Create arrow helper
-    this.arrowHelper = new THREE.ArrowHelper(
-      perpendicular,
-      center,
-      0.5,
-      0x00ff00,
-      0.15,
-      0.1
-    );
-    this.arrowHelper.name = 'edgeArrowHelper';
-    this.arrowHelper.userData['type'] = 'edgeTransform';
-    this.editor.scene.add(this.arrowHelper);
+    this.editor.scene.add(this.edgeAxesObject);
   }
 
-  public getArrowHelper = (): THREE.ArrowHelper | null => {
-    return this.arrowHelper;
+  public getEdgeAxesObject = (): THREE.Object3D | null => {
+    return this.edgeAxesObject;
   }
 }

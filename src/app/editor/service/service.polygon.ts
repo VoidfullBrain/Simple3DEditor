@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import {Editor} from "../editor";
+import {Axis} from "../core/utility/axis/utility.axis";
 
 interface SelectedPolygon {
   faceIndex: number;
@@ -13,7 +14,7 @@ export class Polygon {
   public selectedPolygons: SelectedPolygon[] = [];
   public selectedObject: THREE.Mesh | null = null;
   private polygonHighlights: Map<THREE.Mesh, THREE.Group> = new Map();
-  private arrowHelper: THREE.ArrowHelper | null = null;
+  private polygonAxesObject: THREE.Object3D | null = null;
 
   private constructor(editor: Editor) {
     this.editor = editor;
@@ -208,9 +209,9 @@ export class Polygon {
     this.polygonHighlights.clear();
     this.selectedPolygons = [];
 
-    if (this.arrowHelper) {
-      this.editor.scene.remove(this.arrowHelper);
-      this.arrowHelper = null;
+    if (this.polygonAxesObject) {
+      this.editor.scene.remove(this.polygonAxesObject);
+      this.polygonAxesObject = null;
     }
   }
 
@@ -235,10 +236,10 @@ export class Polygon {
   }
 
   private createArrowHelper = (mesh: THREE.Mesh, faceIndex: number, v1: THREE.Vector3, v2: THREE.Vector3, v3: THREE.Vector3) => {
-    // Remove old arrow helper
-    if (this.arrowHelper) {
-      this.editor.scene.remove(this.arrowHelper);
-      this.arrowHelper = null;
+    // Remove old axes
+    if (this.polygonAxesObject) {
+      this.editor.scene.remove(this.polygonAxesObject);
+      this.polygonAxesObject = null;
     }
 
     // Calculate polygon center
@@ -248,41 +249,65 @@ export class Polygon {
       (v1.z + v2.z + v3.z) / 3
     );
 
-    // Get face normal in world space
-    const geometry = mesh.geometry as THREE.BufferGeometry;
-    const normalAttribute = geometry.getAttribute('normal');
-    const indexAttribute = geometry.getIndex();
+    // Create axes object at polygon center
+    this.polygonAxesObject = new THREE.Object3D();
+    this.polygonAxesObject.name = 'polygonAxesObject';
+    this.polygonAxesObject.position.copy(center);
 
-    let normalIndex = faceIndex * 3;
-    if (indexAttribute) {
-      normalIndex = indexAttribute.getX(faceIndex * 3);
-    }
+    const axisHelper = new Axis(this.polygonAxesObject, false);
+    axisHelper.setAxes([1, 1, 1]);
 
-    const normal = new THREE.Vector3(
-      normalAttribute.getX(normalIndex),
-      normalAttribute.getY(normalIndex),
-      normalAttribute.getZ(normalIndex)
-    );
-
-    // Transform normal to world space
-    const normalMatrix = new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld);
-    normal.applyMatrix3(normalMatrix).normalize();
-
-    // Create arrow helper
-    this.arrowHelper = new THREE.ArrowHelper(
-      normal,
-      center,
-      1,
-      0xffaa00,
-      0.2,
-      0.15
-    );
-    this.arrowHelper.name = 'polygonArrowHelper';
-    this.arrowHelper.userData['type'] = 'polygonTransform';
-    this.editor.scene.add(this.arrowHelper);
+    this.editor.scene.add(this.polygonAxesObject);
   }
 
-  public getArrowHelper = (): THREE.ArrowHelper | null => {
-    return this.arrowHelper;
+  public getPolygonAxesObject = (): THREE.Object3D | null => {
+    return this.polygonAxesObject;
+  }
+
+  public updatePolygonAxesPosition = () => {
+    if (!this.selectedObject || this.selectedPolygons.length === 0) return;
+
+    const mesh = this.selectedObject;
+    const geometry = mesh.geometry as THREE.BufferGeometry;
+    const positionAttribute = geometry.getAttribute('position');
+    const indexAttribute = geometry.getIndex();
+
+    let totalX = 0, totalY = 0, totalZ = 0, count = 0;
+
+    this.selectedPolygons.forEach(polygon => {
+      const faceIndex = polygon.faceIndex;
+      let i1: number, i2: number, i3: number;
+
+      if (indexAttribute) {
+        i1 = indexAttribute.getX(faceIndex * 3);
+        i2 = indexAttribute.getX(faceIndex * 3 + 1);
+        i3 = indexAttribute.getX(faceIndex * 3 + 2);
+      } else {
+        i1 = faceIndex * 3;
+        i2 = faceIndex * 3 + 1;
+        i3 = faceIndex * 3 + 2;
+      }
+
+      [i1, i2, i3].forEach(index => {
+        const v = new THREE.Vector3(
+          positionAttribute.getX(index),
+          positionAttribute.getY(index),
+          positionAttribute.getZ(index)
+        );
+        v.applyMatrix4(mesh.matrixWorld);
+        totalX += v.x;
+        totalY += v.y;
+        totalZ += v.z;
+        count++;
+      });
+    });
+
+    if (count > 0 && this.polygonAxesObject) {
+      this.polygonAxesObject.position.set(
+        totalX / count,
+        totalY / count,
+        totalZ / count
+      );
+    }
   }
 }

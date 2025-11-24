@@ -61,8 +61,8 @@ export class PolygonTransform extends AbstractEventHandler {
       canvas
     );
 
-    const arrowHelper = PolygonTransform.polygonTransformService.getArrowHelper();
-    if (!arrowHelper) return;
+    const axesObject = PolygonTransform.polygonTransformService.getPolygonAxesObject();
+    if (!axesObject) return;
 
     this.axisService.setSelectedAxis(mouseStartPosition);
 

@@ -30,9 +30,9 @@ export class PolygonTransform {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mousePosition, this.editor.camera);
 
-    const arrowHelper = this.polygonService.getArrowHelper();
-    if (arrowHelper) {
-      this.dragStartPosition.copy(arrowHelper.position);
+    const axesObject = this.polygonService.getPolygonAxesObject();
+    if (axesObject) {
+      this.dragStartPosition.copy(axesObject.position);
     }
   }
 
@@ -42,8 +42,8 @@ export class PolygonTransform {
     const selectedObject = this.polygonService.selectedObject;
     if (!selectedObject) return;
 
-    const arrowHelper = this.polygonService.getArrowHelper();
-    if (!arrowHelper) return;
+    const axesObject = this.polygonService.getPolygonAxesObject();
+    if (!axesObject) return;
 
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mousePosition, this.editor.camera);
@@ -123,7 +123,7 @@ export class PolygonTransform {
     this.dragAxis = null;
   }
 
-  public getArrowHelper = (): THREE.ArrowHelper | null => {
-    return this.polygonService.getArrowHelper();
+  public getPolygonAxesObject = (): THREE.Object3D | null => {
+    return this.polygonService.getPolygonAxesObject();
   }
 }
