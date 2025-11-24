@@ -3,6 +3,7 @@ import * as THREE from "three";
 import {Mouse as MouseService} from "../../../service/service.mouse";
 import {Drawing as DrawingService} from "../../../service/service.drawing";
 import {Selection as SelectionService} from "../../../service/service.selection";
+import {SelectionType as SelectionTypeEnum} from "../../../../enum/enum.selection-type";
 import {Editor} from "../../../editor";
 import {CommonKey} from "../common-key/event-handler.common-key";
 import {Axis as AxisService} from "../../../service/service.axis";
@@ -32,6 +33,9 @@ export class MultiSelection extends AbstractEventHandler {
   }
 
   public mouseDown = (event: MouseEvent) => {
+    // Only allow rectangle selection in geometry mode
+    if (this.editor.selectionType !== SelectionTypeEnum.geometry) return;
+
     if(event.button == 0) {
       this.isMouseDown = true;
       this.startPosition = this.mouseService.getMousePositionInDomElement(
@@ -42,6 +46,9 @@ export class MultiSelection extends AbstractEventHandler {
   }
 
   public mouseMove = (event: MouseEvent) => {
+    // Only allow rectangle selection in geometry mode
+    if (this.editor.selectionType !== SelectionTypeEnum.geometry) return;
+
     if(this.isMouseDown && event.button == 0 && !AxisService.isAxisSelected) {
       this.currentPosition = this.mouseService.getMousePositionInDomElement(
         new THREE.Vector2(event.clientX, event.clientY),
@@ -53,6 +60,9 @@ export class MultiSelection extends AbstractEventHandler {
   }
 
   public mouseUp = (event: MouseEvent) => {
+    // Only allow rectangle selection in geometry mode
+    if (this.editor.selectionType !== SelectionTypeEnum.geometry) return;
+
     if(event.button == 0) {
       this.isMouseDown = false;
       this.endPosition = this.mouseService.getMousePositionInDomElement(

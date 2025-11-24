@@ -3,6 +3,7 @@ import {AbstractEventHandler} from "../abstract.event-handler";
 import {CommonKey as CommonKeyEventHandler} from "../common-key/event-handler.common-key";
 import {Mouse as MouseService} from "../../../service/service.mouse";
 import {Selection as SelectionService} from "../../../service/service.selection";
+import {SelectionType as SelectionTypeEnum} from "../../../../enum/enum.selection-type";
 import {Editor} from "../../../editor";
 
 export class SingleSelection extends AbstractEventHandler{
@@ -16,6 +17,9 @@ export class SingleSelection extends AbstractEventHandler{
   }
 
   public click = (event: MouseEvent) => {
+    // Only allow geometry selection in geometry mode
+    if (this.editor.selectionType !== SelectionTypeEnum.geometry) return;
+
     if(event.button == 0) {
       let mouse: THREE.Vector2;
       const canvas = this.editor.viewPort.renderer.domElement;
