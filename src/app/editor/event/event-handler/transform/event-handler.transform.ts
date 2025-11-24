@@ -27,16 +27,6 @@ export class Transform extends AbstractEventHandler{
         new THREE.Vector2(event.clientX, event.clientY),
         canvas
       );
-      const mouseStartPosition = this.mouseService.getMousePositionInDomElement(
-        CommonKeyEventHandler.mousePosition,
-        canvas
-      );
-      const prevMousePosition = this.mouseService.getMousePositionInDomElement(
-        CommonKeyEventHandler.prevMousePosition,
-        canvas
-      );
-
-      this.axisService.setSelectedAxis(mouseStartPosition);
 
       const axis = this.axisService.selectedAxis;
       if(AxisService.isAxisSelected && axis) {
@@ -44,13 +34,13 @@ export class Transform extends AbstractEventHandler{
 
         switch(Editor.transformMode) {
           case TransformEnum.translate:
-            this.transformService.translate(prevMousePosition, mousePosition, AxisEnum[axisIndex]);
+            this.transformService.translate(mousePosition, AxisEnum[axisIndex]);
             break;
           case TransformEnum.scale:
-            this.transformService.scale(prevMousePosition, mousePosition, AxisEnum[axisIndex]);
+            this.transformService.scale(mousePosition, AxisEnum[axisIndex]);
             break;
           case TransformEnum.rotate:
-            this.transformService.rotate(prevMousePosition, mousePosition, AxisEnum[axisIndex]);
+            this.transformService.rotate(mousePosition, AxisEnum[axisIndex]);
             break;
         }
       }
@@ -66,5 +56,15 @@ export class Transform extends AbstractEventHandler{
     );
 
     this.axisService.setSelectedAxis(mouseStartPosition);
+
+    const axis = this.axisService.selectedAxis;
+    if(AxisService.isAxisSelected && axis) {
+      const axisIndex = axis.name as keyof typeof AxisEnum;
+      this.transformService.startDrag(mouseStartPosition, AxisEnum[axisIndex]);
+    }
+  }
+
+  public mouseUp = (event: MouseEvent) => {
+    this.transformService.endDrag();
   }
 }

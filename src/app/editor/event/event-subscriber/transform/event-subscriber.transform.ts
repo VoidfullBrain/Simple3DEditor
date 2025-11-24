@@ -7,5 +7,6 @@ export class Transform extends AbstractEventSubscriber{
     const transformEventHandler = new TransformEventHandler(this.editor);
     window.addEventListener('mousedown', transformEventHandler.mouseDown);
     window.addEventListener('mousemove', transformEventHandler.mouseMove);
+    window.addEventListener('mouseup', transformEventHandler.mouseUp);
   }
 }
