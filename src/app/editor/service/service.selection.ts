@@ -3,11 +3,14 @@ import {Frustum as FrustumService} from "./service.frustum";
 import {Editor} from "../editor";
 import {Axis} from "../core/utility/axis/utility.axis";
 import {CommonKey} from "../event/event-handler/common-key/event-handler.common-key";
+import {Vertex as VertexService} from "./service.vertex";
+import {SelectionType as SelectionTypeEnum} from "../../enum/enum.selection-type";
 
 export class Selection {
   public static selectionAxesUtility: Axis;
   private frustumService: FrustumService;
   private editor: Editor;
+  private vertexService: VertexService;
   private static selectionAxesObject: THREE.Object3D;
   private colors: Array<number> = [
     0xffffff,
@@ -17,6 +20,7 @@ export class Selection {
   constructor(editor: Editor) {
     this.editor = editor;
     this.frustumService = new FrustumService(editor);
+    this.vertexService = new VertexService(editor);
   }
 
   public selectObject = (mouse: THREE.Vector2, multiSelect: boolean = false) => {
@@ -191,6 +195,15 @@ export class Selection {
       this.toggleSelectedObjectsAxisHelper(Selection.selectionAxesObject);
 
       this.editor.scene.add(Selection.selectionAxesObject);
+
+      if (this.editor.selectionType === SelectionTypeEnum.point) {
+        const selectedObject = this.editor.selectedObjects[0];
+        if (selectedObject instanceof THREE.Mesh) {
+          this.vertexService.showVertices(selectedObject);
+        }
+      }
+    } else {
+      this.vertexService.hideVertices();
     }
   }
 

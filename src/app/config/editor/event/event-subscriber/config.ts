@@ -3,6 +3,8 @@ import {MultiSelection as MultiSelectionEventSubscriber} from "../../../../edito
 import {SelectionCommand as SelectionCommandEventSubscriber} from "../../../../editor/event/event-subscriber/selection-command/event-subscriber.selection-command";
 import {CommonKey as CommonKeyEventSubscriber} from "../../../../editor/event/event-subscriber/common-key/event-subscriber.common-key";
 import {Transform as TransformEventSubscriber} from "../../../../editor/event/event-subscriber/transform/event-subscriber.transform";
+import {VertexSelection as VertexSelectionEventSubscriber} from "../../../../editor/event/event-subscriber/vertex-selection/event-subscriber.vertex-selection";
+import {VertexTransform as VertexTransformEventSubscriber} from "../../../../editor/event/event-subscriber/vertex-transform/event-subscriber.vertex-transform";
 
 export const config = [
   {
@@ -33,6 +35,18 @@ export const config = [
     className: TransformEventSubscriber,
     methods: [
       'addTransformEventSubscriber',
+    ]
+  },
+  {
+    className: VertexSelectionEventSubscriber,
+    methods: [
+      'addVertexSelectionEventSubscriber',
+    ]
+  },
+  {
+    className: VertexTransformEventSubscriber,
+    methods: [
+      'addVertexTransformEventSubscriber',
     ]
   },
 ];
