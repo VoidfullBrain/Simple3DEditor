@@ -13,8 +13,8 @@ export class Selection {
   private vertexService: VertexService;
   private static selectionAxesObject: THREE.Object3D;
   private colors: Array<number> = [
-    0xffffff,
-    0xff0000
+    0xffffff,  // white - not selected
+    0x00ff00   // green - selected
   ];
 
   constructor(editor: Editor) {
@@ -211,6 +211,18 @@ export class Selection {
 
   public updateVertexVisibility = () => {
     console.log('Updating vertex visibility for mode:', this.editor.selectionType);
+
+    // Update Points visibility (orange dots on mesh)
+    this.editor.objects.forEach((object: THREE.Object3D) => {
+      if (object.type === 'Mesh') {
+        const pointsChild = object.children.find(child => child.type === 'Points');
+        if (pointsChild) {
+          pointsChild.visible = (this.editor.selectionType === SelectionTypeEnum.point);
+        }
+      }
+    });
+
+    // Update VertexHelpers visibility (green spheres for selection)
     if (this.editor.selectionType === SelectionTypeEnum.point) {
       console.log('Showing vertices for all objects, object count:', this.editor.objects.length);
       this.vertexService.showVerticesForAllObjects();
