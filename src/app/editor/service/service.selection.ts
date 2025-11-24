@@ -209,9 +209,12 @@ export class Selection {
   }
 
   public updateVertexVisibility = () => {
+    console.log('Updating vertex visibility for mode:', this.editor.selectionType);
     if (this.editor.selectionType === SelectionTypeEnum.point) {
+      console.log('Showing vertices for all objects, object count:', this.editor.objects.length);
       this.vertexService.showVerticesForAllObjects();
     } else {
+      console.log('Hiding all vertices');
       this.vertexService.hideAllVertices();
     }
   }

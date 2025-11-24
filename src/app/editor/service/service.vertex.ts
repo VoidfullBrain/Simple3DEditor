@@ -105,12 +105,15 @@ export class Vertex {
 
     const allHelpers: THREE.Mesh[] = [];
     this.vertexHelpersMap.forEach((helpers) => {
+      console.log('Checking helpers, visible:', helpers.visible, 'children:', helpers.children.length);
       if (helpers.visible) {
         allHelpers.push(...helpers.children as THREE.Mesh[]);
       }
     });
 
+    console.log('Total vertex helpers for raycasting:', allHelpers.length);
     const intersectedObjects = rayCaster.intersectObjects(allHelpers, false);
+    console.log('Intersected objects:', intersectedObjects.length);
 
     if (intersectedObjects.length > 0) {
       const intersected = intersectedObjects[0];
