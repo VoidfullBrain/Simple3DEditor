@@ -31,4 +31,8 @@ export class RectangularButtonComponent {
   onClick() {
     this.btnClick.emit();
   }
+
+  onMouseDown(event: MouseEvent) {
+    event.stopPropagation();
+  }
 }

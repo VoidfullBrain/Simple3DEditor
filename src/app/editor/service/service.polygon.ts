@@ -47,7 +47,13 @@ export class Polygon {
     if (intersectedObjects.length > 0) {
       const intersected = intersectedObjects[0];
       const mesh = intersected.object as THREE.Mesh;
-      const faceIndex = intersected.faceIndex;
+      let faceIndex = intersected.faceIndex;
+
+      console.log('Raw intersection:', {
+        faceIndex,
+        hasIndex: intersected.index !== undefined,
+        point: intersected.point
+      });
 
       if (faceIndex === undefined) {
         console.log('faceIndex is undefined!');

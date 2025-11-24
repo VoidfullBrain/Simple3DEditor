@@ -1,7 +1,8 @@
 <button
   class=""
   title="{{name}}"
-  (click)="onClick()">
+  (click)="onClick()"
+  (mousedown)="onMouseDown($event)">
   <span *ngIf="showText; else showIcon">{{text}}</span>
   <ng-template #showIcon>
     <img src="{{icon}}" alt="{{name}}">
