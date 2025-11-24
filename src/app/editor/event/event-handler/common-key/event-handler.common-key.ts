@@ -4,6 +4,7 @@ import {Axis as AxisService} from "../../../service/service.axis";
 
 export class CommonKey extends AbstractEventHandler {
   public static ctrlDown: boolean = false;
+  public static shiftDown: boolean = false;
   public static leftMouseDown: boolean = false;
   public static mousePosition: THREE.Vector2 = new THREE.Vector2();
   public static prevMousePosition: THREE.Vector2 = new THREE.Vector2();
@@ -14,10 +15,18 @@ export class CommonKey extends AbstractEventHandler {
     if(event.ctrlKey) {
       CommonKey.ctrlDown = true;
     }
+    if(event.shiftKey) {
+      CommonKey.shiftDown = true;
+    }
   }
 
-  public keyUpCtrl = () => {
-    CommonKey.ctrlDown = false;
+  public keyUpCtrl = (event: KeyboardEvent) => {
+    if(!event.ctrlKey) {
+      CommonKey.ctrlDown = false;
+    }
+    if(!event.shiftKey) {
+      CommonKey.shiftDown = false;
+    }
   }
 
   public leftMouseDown = (event: MouseEvent) => {

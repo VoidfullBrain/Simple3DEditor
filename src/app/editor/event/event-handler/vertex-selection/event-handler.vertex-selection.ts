@@ -36,22 +36,14 @@ export class VertexSelection extends AbstractEventHandler {
       canvas
     );
 
-    if (this.editor.selectedObjects.length > 0) {
-      const selectedObject = this.editor.selectedObjects[0];
+    const multiSelect = CommonKeyEventHandler.shiftDown;
 
-      if (selectedObject instanceof THREE.Mesh) {
-        if (!VertexSelection.vertexService.vertexHelpers) {
-          VertexSelection.vertexService.showVertices(selectedObject);
-        }
+    const vertexSelected = VertexSelection.vertexService.selectVertex(mousePosition, multiSelect);
 
-        const vertexSelected = VertexSelection.vertexService.selectVertex(mousePosition);
-
-        if (vertexSelected) {
-          VertexSelection.vertexTransformService.showVertexAxes();
-        } else {
-          VertexSelection.vertexTransformService.hideVertexAxes();
-        }
-      }
+    if (vertexSelected) {
+      VertexSelection.vertexTransformService.showVertexAxes();
+    } else if (!multiSelect) {
+      VertexSelection.vertexTransformService.hideVertexAxes();
     }
   }
 }

@@ -192,7 +192,7 @@ export class Selection {
   public toggleSelectionObjectAxes = () => {
     this.editor.scene.remove(Selection.selectionAxesObject);
 
-    if(this.editor.selectedObjects.length > 0) {
+    if(this.editor.selectedObjects.length > 0 && this.editor.selectionType !== SelectionTypeEnum.point) {
       const selectedObjectsAverageOrigin = this.getSelectedObjectsAverageOrigin();
 
       Selection.selectionAxesObject = new THREE.Object3D();
@@ -205,13 +205,14 @@ export class Selection {
       this.toggleSelectedObjectsAxisHelper(Selection.selectionAxesObject);
 
       this.editor.scene.add(Selection.selectionAxesObject);
+    }
+  }
 
-      const selectedObject = this.editor.selectedObjects[0];
-      if (selectedObject instanceof THREE.Mesh) {
-        this.vertexService.showVertices(selectedObject);
-      }
+  public updateVertexVisibility = () => {
+    if (this.editor.selectionType === SelectionTypeEnum.point) {
+      this.vertexService.showVerticesForAllObjects();
     } else {
-      this.vertexService.hideVertices();
+      this.vertexService.hideAllVertices();
     }
   }
 

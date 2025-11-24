@@ -15,7 +15,6 @@ export class VertexTransform {
   ];
 
   private dragStartPoint: THREE.Vector3 | null = null;
-  private vertexStartPosition: THREE.Vector3 | null = null;
   private raycaster: THREE.Raycaster = new THREE.Raycaster();
   private plane: THREE.Plane = new THREE.Plane();
 
@@ -29,7 +28,7 @@ export class VertexTransform {
   public showVertexAxes = () => {
     this.hideVertexAxes();
 
-    const worldPosition = this.vertexService.getWorldVertexPosition();
+    const worldPosition = this.vertexService.getAverageWorldVertexPosition();
     if (!worldPosition) return;
 
     this.vertexAxesObject = new THREE.Object3D();
@@ -50,16 +49,14 @@ export class VertexTransform {
   }
 
   public updateVertexAxesPosition = () => {
-    const worldPosition = this.vertexService.getWorldVertexPosition();
+    const worldPosition = this.vertexService.getAverageWorldVertexPosition();
     if (worldPosition && this.vertexAxesObject) {
       this.vertexAxesObject.position.copy(worldPosition);
     }
   }
 
   public startDrag = (mouse: THREE.Vector2, axis: AxisEnum) => {
-    if (!this.vertexService.selectedVertex || !this.vertexService.selectedObject) return;
-
-    this.vertexStartPosition = this.vertexService.selectedVertex.clone();
+    if (this.vertexService.selectedVertices.length === 0 || !this.vertexService.selectedObject) return;
 
     this.raycaster.setFromCamera(mouse, this.editor.camera);
 
@@ -77,7 +74,7 @@ export class VertexTransform {
 
     const planeNormal = new THREE.Vector3().crossVectors(axisDirection, perpendicular).normalize();
 
-    const worldPosition = this.vertexService.getWorldVertexPosition();
+    const worldPosition = this.vertexService.getAverageWorldVertexPosition();
     if (!worldPosition) return;
 
     this.plane.setFromNormalAndCoplanarPoint(planeNormal, worldPosition);
@@ -91,8 +88,8 @@ export class VertexTransform {
   }
 
   public translate = (mouse: THREE.Vector2, axis: AxisEnum) => {
-    if (!this.dragStartPoint || !this.vertexStartPosition) return;
-    if (!this.vertexService.selectedVertex || !this.vertexService.selectedObject) return;
+    if (!this.dragStartPoint) return;
+    if (this.vertexService.selectedVertices.length === 0 || !this.vertexService.selectedObject) return;
 
     this.raycaster.setFromCamera(mouse, this.editor.camera);
 
@@ -105,11 +102,17 @@ export class VertexTransform {
       const axisDirection = this.axes[axis].clone().normalize();
       const projectedDistance = movement.dot(axisDirection);
 
-      const localMovement = axisDirection.multiplyScalar(projectedDistance);
+      const offset = axisDirection.multiplyScalar(projectedDistance);
 
-      const newPosition = this.vertexStartPosition.clone().add(localMovement);
+      const worldToLocal = new THREE.Matrix4();
+      worldToLocal.copy(this.vertexService.selectedObject.matrixWorld).invert();
 
-      this.vertexService.updateVertexPosition(newPosition);
+      const localOffset = offset.clone().applyMatrix4(worldToLocal);
+      localOffset.sub(new THREE.Vector3().setFromMatrixPosition(worldToLocal));
+
+      this.vertexService.updateVerticesPosition(localOffset);
+
+      this.dragStartPoint.copy(currentIntersection);
 
       this.updateVertexAxesPosition();
 
@@ -119,7 +122,6 @@ export class VertexTransform {
 
   public endDrag = () => {
     this.dragStartPoint = null;
-    this.vertexStartPosition = null;
   }
 
   public getVertexAxesObject = (): THREE.Object3D | null => {

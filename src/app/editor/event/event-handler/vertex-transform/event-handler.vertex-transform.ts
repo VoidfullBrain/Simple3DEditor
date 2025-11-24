@@ -31,7 +31,7 @@ export class VertexTransform extends AbstractEventHandler {
   public mouseMove = (event: MouseEvent) => {
     if (this.editor.selectionType !== SelectionTypeEnum.point) return;
     if (!CommonKeyEventHandler.leftMouseDown) return;
-    if (!VertexTransform.vertexService.selectedVertex) return;
+    if (VertexTransform.vertexService.selectedVertices.length === 0) return;
 
     const canvas = this.editor.viewPort.renderer.domElement;
     const mousePosition = this.mouseService.getMousePositionInDomElement(
@@ -50,7 +50,7 @@ export class VertexTransform extends AbstractEventHandler {
 
   public mouseDown = (event: MouseEvent) => {
     if (this.editor.selectionType !== SelectionTypeEnum.point) return;
-    if (!VertexTransform.vertexService.selectedVertex) return;
+    if (VertexTransform.vertexService.selectedVertices.length === 0) return;
 
     const canvas = this.editor.viewPort.renderer.domElement;
     const mouseStartPosition = this.mouseService.getMousePositionInDomElement(
