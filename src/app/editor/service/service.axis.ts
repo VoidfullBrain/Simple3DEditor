@@ -16,15 +16,22 @@ export class Axis {
   }
 
   public setSelectedAxis = (mouse: THREE.Vector2): void => {
+    console.log('setSelectedAxis called at:', mouse);
     const rayCaster: THREE.Raycaster = new THREE.Raycaster();
 
     rayCaster.setFromCamera(mouse, this.editor.camera);
 
     const intersectedObjects = rayCaster.intersectObjects(this.editor.scene.children, true);
+    console.log('Intersected objects for axis selection:', intersectedObjects.length);
     let found = false;
 
     if (intersectedObjects.length > 0) {
       intersectedObjects.forEach((intersectedObject) => {
+        console.log('Checking object:', {
+          type: intersectedObject.object.type,
+          parentType: intersectedObject.object.parent?.type,
+          parentName: intersectedObject.object.parent?.name
+        });
         if (
           intersectedObject.object.parent?.name != "mainArrowHelper" &&
           intersectedObject.object.parent?.type == 'ArrowHelper' &&
@@ -34,9 +41,11 @@ export class Axis {
           found = true;
           Axis.isAxisSelected = true;
           this.selectedAxis = intersectedObject.object.parent as THREE.ArrowHelper;
+          console.log('Axis selected:', this.selectedAxis.name);
         }
       });
     }
+    console.log('Axis selection result:', Axis.isAxisSelected);
   }
 
   public getSelectedAxisObject = (): THREE.Object3D | undefined => {

@@ -43,6 +43,7 @@ export class VertexTransform extends AbstractEventHandler {
     const axis = this.axisService.selectedAxis;
     if (AxisService.isAxisSelected && axis) {
       const axisIndex = axis.name as keyof typeof AxisEnum;
+      console.log('Translating on axis:', axisIndex, 'to position:', mousePosition);
       VertexTransform.vertexTransformService.translate(mousePosition, AxisEnum[axisIndex]);
     }
 
@@ -50,7 +51,10 @@ export class VertexTransform extends AbstractEventHandler {
   }
 
   public mouseDown = (event: MouseEvent) => {
+    console.log('VertexTransform mouseDown, mode:', this.editor.selectionType);
     if (this.editor.selectionType !== SelectionTypeEnum.point) return;
+
+    console.log('Selected vertices:', VertexTransform.vertexService.selectedVertices.length);
     if (VertexTransform.vertexService.selectedVertices.length === 0) return;
 
     const canvas = this.editor.viewPort.renderer.domElement;
@@ -58,18 +62,23 @@ export class VertexTransform extends AbstractEventHandler {
       CommonKeyEventHandler.mousePosition,
       canvas
     );
+    console.log('Mouse start position:', mouseStartPosition);
 
     const vertexAxesObject = VertexTransform.vertexTransformService.getVertexAxesObject();
+    console.log('Vertex axes object:', vertexAxesObject);
     if (!vertexAxesObject) return;
 
     const tempSelectedAxis = this.axisService.selectedAxis;
     this.axisService.setSelectedAxis(mouseStartPosition);
 
     const axis = this.axisService.selectedAxis;
+    console.log('Axis after selection:', axis, 'isAxisSelected:', AxisService.isAxisSelected);
     if (AxisService.isAxisSelected && axis) {
       const axisIndex = axis.name as keyof typeof AxisEnum;
+      console.log('Starting drag on axis:', axisIndex);
       VertexTransform.vertexTransformService.startDrag(mouseStartPosition, AxisEnum[axisIndex]);
     } else {
+      console.log('No axis selected, restoring previous');
       this.axisService.selectedAxis = tempSelectedAxis;
     }
   }
