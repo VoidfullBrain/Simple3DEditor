@@ -26,19 +26,27 @@ export class VertexTransform {
   }
 
   public showVertexAxes = () => {
+    console.log('showVertexAxes called');
     this.hideVertexAxes();
 
     const worldPosition = this.vertexService.getAverageWorldVertexPosition();
-    if (!worldPosition) return;
+    console.log('World position:', worldPosition);
+    if (!worldPosition) {
+      console.log('No world position, returning');
+      return;
+    }
 
     this.vertexAxesObject = new THREE.Object3D();
     this.vertexAxesObject.name = 'vertexAxesObject';
     this.vertexAxesObject.position.copy(worldPosition);
 
+    console.log('Creating axis helper at position:', this.vertexAxesObject.position);
     const axisHelper = new Axis(this.vertexAxesObject, false);
     axisHelper.setAxes([2, 2, 2]);
 
+    console.log('Adding vertexAxesObject to scene, children:', this.vertexAxesObject.children.length);
     this.editor.scene.add(this.vertexAxesObject);
+    console.log('Scene children count:', this.editor.scene.children.length);
   }
 
   public hideVertexAxes = () => {

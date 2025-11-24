@@ -20,7 +20,7 @@ export class Vertex {
   constructor(editor: Editor) {
     this.editor = editor;
     this.vertexMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
+      color: 0xff8800,
       depthTest: true,
       transparent: true,
       opacity: 0.8
@@ -160,7 +160,7 @@ export class Vertex {
       helpers.children.forEach((child) => {
         const mesh = child as THREE.Mesh;
         if (mesh.material instanceof THREE.MeshBasicMaterial) {
-          mesh.material.color.set(0xffffff);
+          mesh.material.color.set(0xff8800);
         }
       });
     });
@@ -175,7 +175,7 @@ export class Vertex {
       this.vertexHelpersMap.forEach((helpers) => {
         const vertexHelper = helpers.children[vertexIndex] as THREE.Mesh;
         if (vertexHelper && vertexHelper.material instanceof THREE.MeshBasicMaterial) {
-          vertexHelper.material.color.set(0xffffff);
+          vertexHelper.material.color.set(0xff8800);
         }
       });
     }
@@ -219,16 +219,23 @@ export class Vertex {
   }
 
   public getAverageWorldVertexPosition = (): THREE.Vector3 | null => {
-    if (this.selectedVertices.length === 0 || !this.selectedObject) return null;
+    if (this.selectedVertices.length === 0 || !this.selectedObject) {
+      console.log('No selected vertices or object');
+      return null;
+    }
 
+    console.log('Selected vertices count:', this.selectedVertices.length);
     const averageLocal = new THREE.Vector3();
     this.selectedVertices.forEach((v) => {
+      console.log('Vertex position:', v.vertex);
       averageLocal.add(v.vertex);
     });
     averageLocal.divideScalar(this.selectedVertices.length);
+    console.log('Average local position:', averageLocal);
 
     const worldPosition = averageLocal.clone();
     this.selectedObject.localToWorld(worldPosition);
+    console.log('World position:', worldPosition);
 
     return worldPosition;
   }
