@@ -162,21 +162,52 @@ export class Vertex {
       if (alreadySelected && multiSelect) {
         this.deselectSingleVertex(vertexIndex);
       } else {
-        if (mesh.material instanceof THREE.MeshBasicMaterial) {
-          mesh.material.color.set(0x00ff00);
-        }
-
         this.selectedObject = parentMesh;
         const geometry = parentMesh.geometry as THREE.BufferGeometry;
         const positionAttribute = geometry.getAttribute('position');
 
-        const vertex = new THREE.Vector3(
+        const clickedVertex = new THREE.Vector3(
           positionAttribute.getX(vertexIndex),
           positionAttribute.getY(vertexIndex),
           positionAttribute.getZ(vertexIndex)
         );
 
-        this.selectedVertices.push({ vertex, index: vertexIndex });
+        // Find ALL vertices at the same position (welded vertices)
+        const tolerance = 0.0001;
+        const weldedIndices: number[] = [];
+
+        for (let i = 0; i < positionAttribute.count; i++) {
+          const testVertex = new THREE.Vector3(
+            positionAttribute.getX(i),
+            positionAttribute.getY(i),
+            positionAttribute.getZ(i)
+          );
+
+          if (testVertex.distanceTo(clickedVertex) < tolerance) {
+            weldedIndices.push(i);
+          }
+        }
+
+        console.log('Found', weldedIndices.length, 'welded vertices at position:', clickedVertex);
+
+        // Select all welded vertices
+        weldedIndices.forEach((idx) => {
+          const vertex = new THREE.Vector3(
+            positionAttribute.getX(idx),
+            positionAttribute.getY(idx),
+            positionAttribute.getZ(idx)
+          );
+          this.selectedVertices.push({ vertex, index: idx });
+
+          // Update visual feedback for all welded vertices
+          const helpers = this.vertexHelpersMap.get(parentMesh);
+          if (helpers) {
+            const vertexHelper = helpers.children[idx] as THREE.Mesh;
+            if (vertexHelper && vertexHelper.material instanceof THREE.MeshBasicMaterial) {
+              vertexHelper.material.color.set(0x00ff00);
+            }
+          }
+        });
       }
 
       return true;
