@@ -21,6 +21,7 @@ export class EdgeSelection extends AbstractEventHandler {
   }
 
   public mouseDown = (event: MouseEvent) => {
+    console.log('EdgeSelection mouseDown, mode:', this.editor.selectionType);
     if (this.editor.selectionType !== SelectionTypeEnum.edge) return;
 
     const canvas = this.editor.viewPort.renderer.domElement;

@@ -21,6 +21,7 @@ export class PolygonSelection extends AbstractEventHandler {
   }
 
   public mouseDown = (event: MouseEvent) => {
+    console.log('PolygonSelection mouseDown, mode:', this.editor.selectionType);
     if (this.editor.selectionType !== SelectionTypeEnum.polygon) return;
 
     const canvas = this.editor.viewPort.renderer.domElement;
